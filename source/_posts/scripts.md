@@ -10,7 +10,7 @@ tags:
 - scripts
 - awk
 catagories:
-- Awk
+- scripts
 ---
 > 本文收录了工作中用到的经典的awk脚本, 并通过这些脚本解释awk的一些语法和技巧
 
