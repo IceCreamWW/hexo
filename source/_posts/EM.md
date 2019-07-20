@@ -49,68 +49,90 @@ $$
 ---
 ### 如何优化似然函数
 为了优化似然函数$\mathcal{L}(\theta)$, 需要解决两个问题:
-**[1] 为什么优化 $\mathcal{H}(\theta, Q(Z))$, 等同于优化 $\mathcal{L}(\theta)$ ?**
+**[1] 为什么优化 $\mathcal{H}(\theta, Q(Z))$, 等价于优化 $\mathcal{L}(\theta)$ ?**
 **[2] 如何优化 $\mathcal{H}(\theta, Q(Z))$ ?** 
 
 ---
 
-#### 使 [优化下界函数] 等同于 [优化似然函数]
-我们希望通过优化$\mathcal{H}(\theta, Q(Z))$, 来优化$\mathcal{L}(\theta)$，即我们希望给定$\theta$的一个取值$\hat{\theta}$, 有:
+#### 为何优化下界函数
+我们希望通过优化$\mathcal{H}(\theta, Q(Z))$, 来优化$\mathcal{L}(\theta)$，即:
 \begin{align}
-\forall \bar{\theta},\text{ if }&  \\
+\forall \bar{\theta}, \hat{\theta}: \\
+\text{ if } &  \\
 & \mathcal{H}(\bar{\theta}, Q(Z)) > \mathcal{H}(\hat{\theta}, Q(Z)) \\
 \text{then }&  \\
 & \mathcal{L}(\bar{\theta}) > \mathcal{L}(\hat{\theta}) \label{eq:2}\tag{2}
 \end{align}
-根据Jensen不等式，我们现在有：
+而根据Jensen不等式，我们现在有：
+$$
 \begin{align}
-\forall \bar{\theta},\text{ if }&  \\
+\forall \bar{\theta}, \hat{\theta}: \\
+\text{ if } &  \\
 & \mathcal{H}(\bar{\theta}, Q(Z)) > \mathcal{H}(\hat{\theta}, Q(Z)) \\
 \text{then }&  \\
 & \mathcal{L}(\bar{\theta}) \ge \mathcal{H}(\bar{\theta}, Q(Z)) > \mathcal{H}(\hat{\theta}, Q(Z)) \le \mathcal{L}(\hat{\theta})
-\end{align}
+\end{align}\label{eq:3}\tag{3}
+$$ 
 
-因此要使 Eq.(\ref{eq:2}) 成立，只需:
-$$
-\mathcal{H}(\hat{\theta}, Q(Z)) = \mathcal{L}(\hat{\theta}) \label{eq:3}\tag{3}
-$$
+因此要使 Eq.(\ref{eq:2}) 成立，只需 $\mathcal{H}(\hat{\theta}, Q(Z)) = \mathcal{L}(\hat{\theta})$, 即Jensen不等式取等, 根据Jensen不等式的取等条件,有:
 
-我们希望 Eq.(\ref{eq:3}) 成立，根据Jensen函数的取等条件，有:
 \begin{align}
 \frac{P(Y,Z \mathrel | \hat{\theta})}{Q(Z)}             &= constant \\
 \frac{P(Y,Z \mathrel | \hat{\theta})}{constant}         &= Q(Z) \label{eq:4}\tag{4} \\
 \sum_Z \frac{P(Y,Z \mathrel | \hat{\theta})}{constant}  &= \sum_Z Q(Z)=1 \\
 \sum_Z P(Y,Z \mathrel | \hat{\theta})                   &= constant \label{eq:5}\tag{5} \\
 \end{align}
-将 Eq.(\ref{eq:5}) 代入 Eq.(\ref{eq:4}):
+将 Eq.(\ref{eq:5}) 代入 Eq.(\ref{eq:4}), 得到 $Q(Z)$ 的表达式:
 \begin{aligned}
 Q(Z)    &= \frac{P(Y,Z \mathrel | \hat{\theta})}{\sum_Z P(Y,Z \mathrel | \hat{\theta})} \\
         &= P(Z \mathrel | Y, \hat{\theta})
 \end{aligned}
-即 $Q(Z) = P(Z \mathrel | Y, \hat{\theta})$时， Eq.(\ref{eq:3}) 成立，即 $\mathcal{H}(\hat{\theta}, P(Z \mathrel | Y, \hat{\theta})) = \mathcal{L}(\hat{\theta})$ ，优化 $\mathcal{H}(\theta, Q(Z))$ 等同于优化 $\mathcal{L}(\theta)$。
+
+即:
+$$
+\begin{align}
+\text{if and only if: } & Q(Z) = P(Z \mathrel | Y, \hat{\theta}) \\
+\text{then: } & L(\hat{\theta}) = H(\hat{\theta}, Q(Z))  \\
+\text{otherwise: } & L(\hat{\theta}) > H(\hat{\theta}, Q(Z))
+\end{align}\label{eq:6}\tag{6}
+$$
 
 ---
 
-#### 优化下界函数
+根据 Eq.(\ref{eq:3}) 和 Eq.(\ref{eq:6}), 我们得到如下结论:
 
-根据上一节我们知道，$Q(Z)$ 是 $Z$ 的某个分布，是关于 $\theta$ 的函数。因此，$\mathcal{H}(\theta, Q(Z))$ 可以写成 $\mathcal{H}(\theta^1, \theta^2)$。其中 $\theta^1, \theta^2$ 的定义域均为模型参数 $\theta$ 的取值范围。
+\begin{align}
+\forall \bar{\theta}, \hat{\theta}: \\
+\text{ if } &  \\
+& \mathcal{H}(\bar{\theta}, P(Z \mathrel | Y, \hat{\theta})) > \mathcal{H}(\hat{\theta}, P(Z \mathrel | Y, \hat{\theta})) \\
+\text{then }&  \\
+& \mathcal{L}(\bar{\theta}) > \mathcal{H}(\bar{\theta}, P(Z \mathrel | Y, \hat{\theta})) > \mathcal{H}(\hat{\theta}, P(Z \mathrel | Y, \hat{\theta})) = \mathcal{L}(\hat{\theta})
+\end{align}
 
-根据上一节的结论（也可以在 Eq.(\ref{eq:1}) 中验证）:
+即在似然函数的参数 $\theta = \hat{\theta}$ 处, 取下界函数 $H(\hat{\theta}, Q(Z))$ 的参数 $Q(Z) = P(Z \mathrel | Y, \hat{\theta})$ 时，优化下界函数 $\mathcal{H}(\hat{\theta}, Q(Z))$ 等价于优化似然函数 $\mathcal{L}(\hat{\theta})$。
+
+---
+
+#### 如何优化下界函数
+
+根据 Eq.(\ref{eq:6}):
+\begin{align}
+\mathcal{L(\bar{\theta})} = \mathcal{H}(\bar{\theta}, P(Z \mathrel | Y, \bar{\theta})) \\
+\forall \hat{\theta} \neq \bar{\theta},\ \mathcal{L(\bar{\theta})} > \mathcal{H}(\bar{\theta}, P(Z \mathrel | Y, \hat{\theta})) 
+\end{align}
+即:
 $$
-\mathcal{L(\bar{\theta})} = \mathcal{H}(\bar{\theta}, \bar{\theta}) \label{eq:6}\tag{6}
-$$
-由于不满足Jensen不等式的取等条件[mark]， $\forall \bar{\theta} \neq \hat{\theta}$, 有:
-$$
-\mathcal{L(\bar{\theta})} > \mathcal{H}(\bar{\theta}, \hat{\theta}) \label{eq:7}\tag{7}
+\forall \hat{\theta} \neq \bar{\theta},\ \mathcal{H}(\bar{\theta}, P(Z \mathrel | Y, \bar{\theta})) > \mathcal{H}(\bar{\theta}, P(Z \mathrel | Y, \hat{\theta}))
 $$
 
-根据 Eq.(\ref{eq:6}) 和 Eq.(\ref{eq:7}), 得到, $\forall \bar{\theta} \neq \hat{\theta}$, 有:
-$$
-\mathcal{H}(\bar{\theta}, \bar{\theta}) > \mathcal{H}(\bar{\theta}, \hat{\theta}) \label{eq:8}\tag{8}
-$$
+**事实上, 对与给定的 $\hat{\theta}$, $\mathcal{H}(\theta, P(Z \mathrel | Y, \hat{\theta}))$是可以优化的.**  因此，我们可以通过这样的迭代过程优化 $\mathcal{H}(\theta^1, P(Z \mathrel | Y, \theta^2))$，对于初值 $\mathcal{H}(\theta_0, P(Z \mathrel | Y, \theta_0))$:
+\begin{align}
+& \mathcal{H}(\theta_0, P(Z \mathrel | Y, \theta_0)) < \mathcal{H}(\theta_1, P(Z \mathrel | Y, \theta_0)) \\
+< &\ \mathcal{H}(\theta_1, P(Z \mathrel | Y, \theta_1)) < \mathcal{H}(\theta_2, P(Z \mathrel | Y, \theta_1)) \\
+< &\ \cdots
+\end{align}
+在 $\mathcal{H}(\theta_{n+1}, P(Z \mathrel | Y, \theta_{n}))=\mathcal{H}(\theta_{n}, P(Z \mathrel | Y, \theta_{n}))$ 时收敛。
 
-因此，我们可以通过这样的迭代过程优化 $H(\theta^1, \theta^2)$，对于初值 $H(\theta_0, \theta_0)$:
 $$
-H(\theta_0, \theta_0) < H(\theta_1, \theta_0) < H(\theta_1, \theta_1) < H(\theta_2, \theta_1) < \cdots
+\underset{\theta}{\mathrm{argmin}}
 $$
-在 $\theta_{n}=\theta_{n-1}$ 时收敛。
