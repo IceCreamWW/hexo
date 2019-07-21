@@ -44,7 +44,7 @@ $$
                     &= \mathcal{H}(\theta, Q(Z))
 \end{align}\label{eq:1}\tag{1} 
 $$
-其中 $Q(Z)$ 是 $Z$ 的某个概率分布函数
+因为 $Q(Z)$ 需要满足 $\sum_Z Q(Z)=1$, 因此它是 $Z$ 的某个概率分布函数.
 
 ---
 ### 如何优化似然函数
@@ -109,30 +109,38 @@ $$
 & \mathcal{L}(\bar{\theta}) > \mathcal{H}(\bar{\theta}, P(Z \mathrel | Y, \hat{\theta})) > \mathcal{H}(\hat{\theta}, P(Z \mathrel | Y, \hat{\theta})) = \mathcal{L}(\hat{\theta})
 \end{align}
 
-即在似然函数的参数 $\theta = \hat{\theta}$ 处, 取下界函数 $H(\hat{\theta}, Q(Z))$ 的参数 $Q(Z) = P(Z \mathrel | Y, \hat{\theta})$ 时，优化下界函数 $\mathcal{H}(\hat{\theta}, Q(Z))$ 等价于优化似然函数 $\mathcal{L}(\hat{\theta})$。
+**即, 在似然函数的参数 $\theta = \hat{\theta}$ 处, 取下界函数 $H(\hat{\theta}, Q(Z))$ 的参数 $Q(Z) = P(Z \mathrel | Y, \hat{\theta})$ 时，优化下界函数 $\mathcal{H}(\hat{\theta}, Q(Z))$ 等价于优化似然函数 $\mathcal{L}(\hat{\theta})$。**
 
 ---
 
 #### 如何优化下界函数
 
 根据 Eq.(\ref{eq:6}):
-\begin{align}
-\mathcal{L(\bar{\theta})} = \mathcal{H}(\bar{\theta}, P(Z \mathrel | Y, \bar{\theta})) \\
-\forall \hat{\theta} \neq \bar{\theta},\ \mathcal{L(\bar{\theta})} > \mathcal{H}(\bar{\theta}, P(Z \mathrel | Y, \hat{\theta})) 
-\end{align}
-即:
 $$
-\forall \hat{\theta} \neq \bar{\theta},\ \mathcal{H}(\bar{\theta}, P(Z \mathrel | Y, \bar{\theta})) > \mathcal{H}(\bar{\theta}, P(Z \mathrel | Y, \hat{\theta}))
+\begin{align}
+& \forall \hat{\theta} \neq \bar{\theta} \\
+\because & \mathcal{L(\bar{\theta})} = \mathcal{H}(\bar{\theta}, P(Z \mathrel | Y, \bar{\theta})) \\
+& \mathcal{L(\bar{\theta})} > \mathcal{H}(\bar{\theta}, P(Z \mathrel | Y, \hat{\theta})) \\
+\therefore & \mathcal{H}(\bar{\theta}, P(Z \mathrel | Y, \bar{\theta})) > \mathcal{H}(\bar{\theta}, P(Z \mathrel | Y, \hat{\theta}))
+\end{align}\label{eq:7}\tag{7}
 $$
 
-**事实上, 对与给定的 $\hat{\theta}$, $\mathcal{H}(\theta, P(Z \mathrel | Y, \hat{\theta}))$是可以优化的.**  因此，我们可以通过这样的迭代过程优化 $\mathcal{H}(\theta^1, P(Z \mathrel | Y, \theta^2))$，对于初值 $\mathcal{H}(\theta_0, P(Z \mathrel | Y, \theta_0))$:
+---
+又:
+$$
 \begin{align}
-& \mathcal{H}(\theta_0, P(Z \mathrel | Y, \theta_0)) < \mathcal{H}(\theta_1, P(Z \mathrel | Y, \theta_0)) \\
-< &\ \mathcal{H}(\theta_1, P(Z \mathrel | Y, \theta_1)) < \mathcal{H}(\theta_2, P(Z \mathrel | Y, \theta_1)) \\
+\forall \hat{\theta},  \exists \bar{\theta} &= \underset{\theta}{\mathrm{argmax}}\ \mathcal{H}(\theta, P(Z \mathrel | Y, \hat{\theta})) \\
+&= \underset{\theta}{\mathrm{argmax}}\ \sum_Z (P(Z \mathrel | Y, \hat{\theta}) \cdot \log (\frac{P(Y,Z \mathrel | \theta)}{P(Z \mathrel | Y, \hat{\theta})})) \\
+&= \underset{\theta}{\mathrm{argmax}}\ \sum_Z (P(Z \mathrel | Y, \hat{\theta}) \cdot \log (P(Y,Z \mathrel | \theta))) \\
+&= \underset{\theta}{\mathrm{argmax}}\ E_{Z\sim P(Z \mathrel | Y, \hat{\theta})} [\log (P(Y,Z \mathrel | \theta)))] \\
+s.t.\  & \mathcal{H}(\bar{\theta}, P(Z \mathrel | Y, \hat{\theta})) \ge \mathcal{H}(\hat{\theta}, P(Z \mathrel | Y, \hat{\theta}))
+\end{align}\label{eq:8}\tag{8}
+$$
+
+根据 Eq.(\ref{eq:7}) 和 Eq.(\ref{eq:8}),对于初值 $\mathcal{H}(\theta_0, P(Z \mathrel | Y, \theta_0))$, 我们可以通过这样的迭代过程优化它: 
+\begin{align}
+& \mathcal{H}(\theta_0, P(Z \mathrel | Y, \theta_0)) \le \mathcal{H}(\theta_1, P(Z \mathrel | Y, \theta_0)) \\
+< &\ \mathcal{H}(\theta_1, P(Z \mathrel | Y, \theta_1)) \le \mathcal{H}(\theta_2, P(Z \mathrel | Y, \theta_1)) \\
 < &\ \cdots
 \end{align}
 在 $\mathcal{H}(\theta_{n+1}, P(Z \mathrel | Y, \theta_{n}))=\mathcal{H}(\theta_{n}, P(Z \mathrel | Y, \theta_{n}))$ 时收敛。
-
-$$
-\underset{\theta}{\mathrm{argmin}}
-$$
