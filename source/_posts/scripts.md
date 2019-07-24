@@ -14,12 +14,35 @@ catagories:
 ---
 > 本文收录了工作中用到的经典的awk脚本, 并通过这些脚本解释awk的一些语法和技巧
 
+# speech processing
+
+## common
+
+###  sort\_to\_field.awk
+
+- 目标
+
+#### AWK 脚本
+
+```awk
+FNR==NR{
+    record[$f] = $0
+}
+FNR != NR {
+    if ($f in record)
+        print record[$f]
+}
+```
+
+
+---
+
 ## VAD
 
-### compare\_mlf.awk
+### compare\_mlf.awk 
 
-- 目标: 对比两个mlf标注文件中，标注一致和不一致的时间段  
-- 介绍: mlf文件是描述音频vad的常用格式
+- 目标: 对比两个mlf标注文件中，标注一致和不一致的时间段 (compare\_mlf.awk 1.mlf 2.mlf)
+- 介绍: mlf文件是描述音频vad的常用格式, 是一行[uttid]后接着若干行[start end spc/sil]格式的对某一段时间是语音帧/静音帧的判定
 
 ---
 

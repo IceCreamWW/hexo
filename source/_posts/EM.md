@@ -1,13 +1,14 @@
 ---
-title: "[EM] EM Algorithm"
+title: "[Algorithm] EM algorithm"
 catalog: true
-toc\_nav\_num: true
+toc_nav_num: true
 date: 2019-07-16 11:08:59
 subtitle: "EM algorithm derivation"
 header-img: "Demo.png"
-top: 0
+top: 1
 tags:
 - algorithm
+- optimization
 - EM
 mathjax: true
 catagories:
@@ -44,7 +45,7 @@ $$
                     &= \mathcal{H}(\theta, Q(Z))
 \end{align}\label{eq:1}\tag{1} 
 $$
-因为 $Q(Z)$ 需要满足 $\sum_Z Q(Z)=1$, 因此它是 $Z$ 的某个概率分布函数.
+构造Jensen不等式要求 $Q(Z)$ 满足 $\sum_Z Q(Z)=1$, 因此它可以视为 $Z$ 的某个概率分布函数.
 
 ---
 ### 如何优化似然函数
@@ -74,7 +75,7 @@ $$
 \end{align}\label{eq:3}\tag{3}
 $$ 
 
-因此要使 Eq.(\ref{eq:2}) 成立，只需 $\mathcal{H}(\hat{\theta}, Q(Z)) = \mathcal{L}(\hat{\theta})$, 即Jensen不等式取等, 根据Jensen不等式的取等条件,有:
+因此要使 Eq.(\ref{eq:2}) 成立，只需 $\mathcal{H}(\hat{\theta}, Q(Z)) = \mathcal{L}(\hat{\theta})$, 即Jensen不等式 Eq.(\ref{eq:1}) 在 $\theta=\hat{\theta}$ 处取等, 根据Jensen不等式的取等条件, 有:
 
 \begin{align}
 \frac{P(Y,Z \mathrel | \hat{\theta})}{Q(Z)}             &= constant \\
@@ -109,7 +110,7 @@ $$
 & \mathcal{L}(\bar{\theta}) > \mathcal{H}(\bar{\theta}, P(Z \mathrel | Y, \hat{\theta})) > \mathcal{H}(\hat{\theta}, P(Z \mathrel | Y, \hat{\theta})) = \mathcal{L}(\hat{\theta})
 \end{align}
 
-**即, 在似然函数的参数 $\theta = \hat{\theta}$ 处, 取下界函数 $H(\hat{\theta}, Q(Z))$ 的参数 $Q(Z) = P(Z \mathrel | Y, \hat{\theta})$ 时，优化下界函数 $\mathcal{H}(\hat{\theta}, Q(Z))$ 等价于优化似然函数 $\mathcal{L}(\hat{\theta})$。**
+> **即, 在似然函数的参数 $\theta = \hat{\theta}$ 处, 取下界函数 $H(\hat{\theta}, Q(Z))$ 的参数 $Q(Z) = P(Z \mathrel | Y, \hat{\theta})$ 时，优化下界函数 $\mathcal{H}(\hat{\theta}, Q(Z))$ 等价于优化似然函数 $\mathcal{L}(\hat{\theta})$。**
 
 ---
 
@@ -138,9 +139,41 @@ s.t.\  & \mathcal{H}(\bar{\theta}, P(Z \mathrel | Y, \hat{\theta})) \ge \mathcal
 $$
 
 根据 Eq.(\ref{eq:7}) 和 Eq.(\ref{eq:8}),对于初值 $\mathcal{H}(\theta_0, P(Z \mathrel | Y, \theta_0))$, 我们可以通过这样的迭代过程优化它: 
+$$
 \begin{align}
 & \mathcal{H}(\theta_0, P(Z \mathrel | Y, \theta_0)) \le \mathcal{H}(\theta_1, P(Z \mathrel | Y, \theta_0)) \\
 < &\ \mathcal{H}(\theta_1, P(Z \mathrel | Y, \theta_1)) \le \mathcal{H}(\theta_2, P(Z \mathrel | Y, \theta_1)) \\
 < &\ \cdots
-\end{align}
+\end{align}\label{eq:9}\tag{9}
+$$
 在 $\mathcal{H}(\theta_{n+1}, P(Z \mathrel | Y, \theta_{n}))=\mathcal{H}(\theta_{n}, P(Z \mathrel | Y, \theta_{n}))$ 时收敛。
+
+---
+
+## 算法流程
+
+Eq.(\ref{eq:9}) 的迭代中包含了两个优化过程: 一个是 Eq.(\ref{eq:7})，另一个是 Eq.(\ref{eq:8})。而 Eq.(\ref{eq:7}) 的过程是简单的将下界函数  $\mathcal{H}(\theta_{i+1}, P(Z \mathrel | Y, \theta_{i}))$ 替换为 $\mathcal{H}(\theta_{i+1}, P(Z \mathrel | Y, \theta_{i+1}))$ 。因此, EM算法的流程指的是 Eq.(\ref{eq:8}) 的优化 (即产生 $\theta_{i+1}$ 的过程)。
+
+### E步
+
+根据当前的 $\hat{\theta}$ 写出 Eq.(\ref{eq:8}) 的优化目标:
+$$
+J(\theta) = E_{Z\sim P(Z \mathrel | Y, \theta_i)} [\log (P(Y,Z \mathrel | \theta)))] \\
+$$
+
+### M步
+
+对 $J(\theta)$ 关于 $\theta$ 求导等于0, 得到 $\theta_{i+1}$:
+$$
+\theta_{i+1} = \underset{\theta}{\mathrm{argmax}}\ J(\theta) \\
+\frac{d J(\theta)}{d \theta} = 0  \Rightarrow  \theta = \theta_{i+1}
+$$
+
+---
+
+
+## 相关链接
+
+- [EM算法的应用: GMM](/article/GMM)
+- [EM算法的应用: HMM](/article/HMM)
+- [Jensen 不等式的证明 - 数学归纳法](/pdfs/jensen_inequality.pdf)

@@ -14,7 +14,7 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <title>
         
-          [EM] EM Algorithm - 王巍 | Blog
+          [Algorithm] EM algorithm - 王巍 | Blog
         
     </title>
 
@@ -96,12 +96,15 @@
                             <a class="tag" href="/tags/#algorithm" title="algorithm">
                                 algorithm</a>
                             
+                            <a class="tag" href="/tags/#optimization" title="optimization">
+                                optimization</a>
+                            
                             <a class="tag" href="/tags/#EM" title="EM">
                                 EM</a>
                             
                         </div>
                         <h1>
-                            [EM] EM Algorithm
+                            [Algorithm] EM algorithm
                         </h1>
                         <!-- <h2 class="subheading">EM algorithm derivation</h2> -->
                         <!--文章访问量统计-->
@@ -178,14 +181,14 @@
 
                         
                         <li>
-                            <a href="/tags/">Tags</a>
+                            <a href="/archive/">Archives</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/archive/">Archives</a>
+                            <a href="/tags/">Tags</a>
                         </li>
                         
                      -->
@@ -265,7 +268,7 @@
                     &= \log \sum_Z (Q(Z) \cdot \frac{P(Y,Z \mathrel | \theta)}{Q(Z)}) \\
                     &\ge \sum_Z (Q(Z) \cdot \log (\frac{P(Y,Z \mathrel | \theta)}{Q(Z)})) \\
                     &= \mathcal{H}(\theta, Q(Z))
-\end{align}\label{eq:1}\tag{1}</script><p>因为 $Q(Z)$ 需要满足 $\sum_Z Q(Z)=1$, 因此它是 $Z$ 的某个概率分布函数.</p>
+\end{align}\label{eq:1}\tag{1}</script><p>构造Jensen不等式要求 $Q(Z)$ 满足 $\sum_Z Q(Z)=1$, 因此它可以视为 $Z$ 的某个概率分布函数.</p>
 <hr>
 <h3 id="如何优化似然函数"><a href="#如何优化似然函数" class="headerlink" title="如何优化似然函数"></a>如何优化似然函数</h3><p>为了优化似然函数$\mathcal{L}(\theta)$, 需要解决两个问题:<br><strong>[1] 为什么优化 $\mathcal{H}(\theta, Q(Z))$, 等价于优化 $\mathcal{L}(\theta)$ ?</strong><br><strong>[2] 如何优化 $\mathcal{H}(\theta, Q(Z))$ ?</strong> </p>
 <hr>
@@ -277,7 +280,7 @@
 & \mathcal{H}(\bar{\theta}, Q(Z)) > \mathcal{H}(\hat{\theta}, Q(Z)) \\
 \text{then }&  \\
 & \mathcal{L}(\bar{\theta}) \ge \mathcal{H}(\bar{\theta}, Q(Z)) > \mathcal{H}(\hat{\theta}, Q(Z)) \le \mathcal{L}(\hat{\theta})
-\end{align}\label{eq:3}\tag{3}</script><p>因此要使 Eq.(\ref{eq:2}) 成立，只需 $\mathcal{H}(\hat{\theta}, Q(Z)) = \mathcal{L}(\hat{\theta})$, 即Jensen不等式取等, 根据Jensen不等式的取等条件,有:</p>
+\end{align}\label{eq:3}\tag{3}</script><p>因此要使 Eq.(\ref{eq:2}) 成立，只需 $\mathcal{H}(\hat{\theta}, Q(Z)) = \mathcal{L}(\hat{\theta})$, 即Jensen不等式 Eq.(\ref{eq:1}) 在 $\theta=\hat{\theta}$ 处取等, 根据Jensen不等式的取等条件, 有:</p>
 <p>\begin{align}<br>\frac{P(Y,Z \mathrel | \hat{\theta})}{Q(Z)}             &amp;= constant \\<br>\frac{P(Y,Z \mathrel | \hat{\theta})}{constant}         &amp;= Q(Z) \label{eq:4}\tag{4} \\<br>\sum_Z \frac{P(Y,Z \mathrel | \hat{\theta})}{constant}  &amp;= \sum_Z Q(Z)=1 \\<br>\sum_Z P(Y,Z \mathrel | \hat{\theta})                   &amp;= constant \label{eq:5}\tag{5} \\<br>\end{align}<br>将 Eq.(\ref{eq:5}) 代入 Eq.(\ref{eq:4}), 得到 $Q(Z)$ 的表达式:<br>\begin{aligned}<br>Q(Z)    &amp;= \frac{P(Y,Z \mathrel | \hat{\theta})}{\sum_Z P(Y,Z \mathrel | \hat{\theta})} \\<br>        &amp;= P(Z \mathrel | Y, \hat{\theta})<br>\end{aligned}</p>
 <p>即:</p>
 <script type="math/tex; mode=display">
@@ -288,7 +291,9 @@
 \end{align}\label{eq:6}\tag{6}</script><hr>
 <p>根据 Eq.(\ref{eq:3}) 和 Eq.(\ref{eq:6}), 我们得到如下结论:</p>
 <p>\begin{align}<br>\forall \bar{\theta}, \hat{\theta}: \\<br>\text{ if } &amp;  \\<br>&amp; \mathcal{H}(\bar{\theta}, P(Z \mathrel | Y, \hat{\theta})) &gt; \mathcal{H}(\hat{\theta}, P(Z \mathrel | Y, \hat{\theta})) \\<br>\text{then }&amp;  \\<br>&amp; \mathcal{L}(\bar{\theta}) &gt; \mathcal{H}(\bar{\theta}, P(Z \mathrel | Y, \hat{\theta})) &gt; \mathcal{H}(\hat{\theta}, P(Z \mathrel | Y, \hat{\theta})) = \mathcal{L}(\hat{\theta})<br>\end{align}</p>
+<blockquote>
 <p><strong>即, 在似然函数的参数 $\theta = \hat{\theta}$ 处, 取下界函数 $H(\hat{\theta}, Q(Z))$ 的参数 $Q(Z) = P(Z \mathrel | Y, \hat{\theta})$ 时，优化下界函数 $\mathcal{H}(\hat{\theta}, Q(Z))$ 等价于优化似然函数 $\mathcal{L}(\hat{\theta})$。</strong></p>
+</blockquote>
 <hr>
 <h4 id="如何优化下界函数"><a href="#如何优化下界函数" class="headerlink" title="如何优化下界函数"></a>如何优化下界函数</h4><p>根据 Eq.(\ref{eq:6}):</p>
 <script type="math/tex; mode=display">
@@ -306,7 +311,26 @@
 &= \underset{\theta}{\mathrm{argmax}}\ \sum_Z (P(Z \mathrel | Y, \hat{\theta}) \cdot \log (P(Y,Z \mathrel | \theta))) \\
 &= \underset{\theta}{\mathrm{argmax}}\ E_{Z\sim P(Z \mathrel | Y, \hat{\theta})} [\log (P(Y,Z \mathrel | \theta)))] \\
 s.t.\  & \mathcal{H}(\bar{\theta}, P(Z \mathrel | Y, \hat{\theta})) \ge \mathcal{H}(\hat{\theta}, P(Z \mathrel | Y, \hat{\theta}))
-\end{align}\label{eq:8}\tag{8}</script><p>根据 Eq.(\ref{eq:7}) 和 Eq.(\ref{eq:8}),对于初值 $\mathcal{H}(\theta_0, P(Z \mathrel | Y, \theta_0))$, 我们可以通过这样的迭代过程优化它:<br>\begin{align}<br>&amp; \mathcal{H}(\theta_0, P(Z \mathrel | Y, \theta_0)) \le \mathcal{H}(\theta_1, P(Z \mathrel | Y, \theta_0)) \\<br>&lt; &amp;\ \mathcal{H}(\theta_1, P(Z \mathrel | Y, \theta_1)) \le \mathcal{H}(\theta_2, P(Z \mathrel | Y, \theta_1)) \\<br>&lt; &amp;\ \cdots<br>\end{align}<br>在 $\mathcal{H}(\theta_{n+1}, P(Z \mathrel | Y, \theta_{n}))=\mathcal{H}(\theta_{n}, P(Z \mathrel | Y, \theta_{n}))$ 时收敛。</p>
+\end{align}\label{eq:8}\tag{8}</script><p>根据 Eq.(\ref{eq:7}) 和 Eq.(\ref{eq:8}),对于初值 $\mathcal{H}(\theta_0, P(Z \mathrel | Y, \theta_0))$, 我们可以通过这样的迭代过程优化它: </p>
+<script type="math/tex; mode=display">
+\begin{align}
+& \mathcal{H}(\theta_0, P(Z \mathrel | Y, \theta_0)) \le \mathcal{H}(\theta_1, P(Z \mathrel | Y, \theta_0)) \\
+< &\ \mathcal{H}(\theta_1, P(Z \mathrel | Y, \theta_1)) \le \mathcal{H}(\theta_2, P(Z \mathrel | Y, \theta_1)) \\
+< &\ \cdots
+\end{align}\label{eq:9}\tag{9}</script><p>在 $\mathcal{H}(\theta_{n+1}, P(Z \mathrel | Y, \theta_{n}))=\mathcal{H}(\theta_{n}, P(Z \mathrel | Y, \theta_{n}))$ 时收敛。</p>
+<hr>
+<h2 id="算法流程"><a href="#算法流程" class="headerlink" title="算法流程"></a>算法流程</h2><p>Eq.(\ref{eq:9}) 的迭代中包含了两个优化过程: 一个是 Eq.(\ref{eq:7})，另一个是 Eq.(\ref{eq:8})。而 Eq.(\ref{eq:7}) 的过程是简单的将下界函数  $\mathcal{H}(\theta_{i+1}, P(Z \mathrel | Y, \theta_{i}))$ 替换为 $\mathcal{H}(\theta_{i+1}, P(Z \mathrel | Y, \theta_{i+1}))$ 。因此, EM算法的流程指的是 Eq.(\ref{eq:8}) 的优化 (即产生 $\theta_{i+1}$ 的过程)。</p>
+<h3 id="E步"><a href="#E步" class="headerlink" title="E步"></a>E步</h3><p>根据当前的 $\hat{\theta}$ 写出 Eq.(\ref{eq:8}) 的优化目标:</p>
+<script type="math/tex; mode=display">
+J(\theta) = E_{Z\sim P(Z \mathrel | Y, \theta_i)} [\log (P(Y,Z \mathrel | \theta)))] \\</script><h3 id="M步"><a href="#M步" class="headerlink" title="M步"></a>M步</h3><p>对 $J(\theta)$ 关于 $\theta$ 求导等于0, 得到 $\theta_{i+1}$:</p>
+<script type="math/tex; mode=display">
+\theta_{i+1} = \underset{\theta}{\mathrm{argmax}}\ J(\theta) \\
+\frac{d J(\theta)}{d \theta} = 0  \Rightarrow  \theta = \theta_{i+1}</script><hr>
+<h2 id="相关链接"><a href="#相关链接" class="headerlink" title="相关链接"></a>相关链接</h2><ul>
+<li><a href="/article/GMM">EM算法的应用: GMM</a></li>
+<li><a href="/article/HMM">EM算法的应用: HMM</a></li>
+<li><a href="/pdfs/jensen_inequality.pdf">Jensen 不等式的证明 - 数学归纳法</a></li>
+</ul>
 
                 
 
@@ -365,18 +389,12 @@ s.t.\  & \mathcal{H}(\bar{\theta}, P(Z \mathrel | Y, \hat{\theta})) \ge \mathcal
             <!-- Table of Contents -->
 
   
-    <style>
-      span.toc-nav-number{
-        display: none
-      }
-    </style>
-  
     
       <aside id="sidebar">
         <div id="toc" class="toc-article">
         <strong class="toc-title">Contents</strong>
         
-          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#介绍"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">介绍</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#算法推导"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">算法推导</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#似然函数"><span class="toc-nav-number">2.1.</span> <span class="toc-nav-text">似然函数</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#似然函数的下界"><span class="toc-nav-number">2.1.1.</span> <span class="toc-nav-text">似然函数的下界</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#如何优化似然函数"><span class="toc-nav-number">2.2.</span> <span class="toc-nav-text">如何优化似然函数</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#为何优化下界函数"><span class="toc-nav-number">2.2.1.</span> <span class="toc-nav-text">为何优化下界函数</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#如何优化下界函数"><span class="toc-nav-number">2.2.2.</span> <span class="toc-nav-text">如何优化下界函数</span></a></li></ol></li></ol></li></ol>
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#介绍"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">介绍</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#算法推导"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">算法推导</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#似然函数"><span class="toc-nav-number">2.1.</span> <span class="toc-nav-text">似然函数</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#似然函数的下界"><span class="toc-nav-number">2.1.1.</span> <span class="toc-nav-text">似然函数的下界</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#如何优化似然函数"><span class="toc-nav-number">2.2.</span> <span class="toc-nav-text">如何优化似然函数</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#为何优化下界函数"><span class="toc-nav-number">2.2.1.</span> <span class="toc-nav-text">为何优化下界函数</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#如何优化下界函数"><span class="toc-nav-number">2.2.2.</span> <span class="toc-nav-text">如何优化下界函数</span></a></li></ol></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#算法流程"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">算法流程</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#E步"><span class="toc-nav-number">3.1.</span> <span class="toc-nav-text">E步</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#M步"><span class="toc-nav-number">3.2.</span> <span class="toc-nav-text">M步</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#相关链接"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">相关链接</span></a></li></ol>
         
         </div>
       </aside>
@@ -397,6 +415,8 @@ s.t.\  & \mathcal{H}(\bar{\theta}, P(Z \mathrel | Y, \hat{\theta})) \ge \mathcal
                     <div class="tags">
                        
                           <a class="tag" href="/tags/#algorithm" title="algorithm">algorithm</a>
+                        
+                          <a class="tag" href="/tags/#optimization" title="optimization">optimization</a>
                         
                           <a class="tag" href="/tags/#EM" title="EM">EM</a>
                         
