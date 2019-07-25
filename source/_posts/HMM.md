@@ -19,15 +19,14 @@ catagories:
 
 ## HMM 的组成
 
-
 ### 描述HMM的五元组
 |           符号                                |                意义                                                               |
 |       -----------                             |                -----------                                                        |
-| $S = {s_1, s_2, \dots, s_N}$                 |        隐藏状态集合                                                               | 
-| $V = {v_1, v_2, \dots, v_m, \dots}$         |        观测值集合                                                                 | 
-| $A = a_{11}, \dots, a_{ij}, \dots, a_{NN}$  |        转移概率矩阵, $\sum_{j=1}^N a_{ij} = 1$                                    | 
+| $S = {s_1, s_2, \dots, s_N}$                  |        隐藏状态集合                                                               | 
+| $V = {v_1, v_2, \dots, v_m, \dots}$           |        观测值集合                                                                 | 
+| $A = a_{11}, \dots, a_{ij}, \dots, a_{NN}$    |        转移概率矩阵, $\sum_{j=1}^N a_{ij} = 1$                                    | 
 | $B = b_i(v_j)$                                |        发射概率: 隐藏状态 $s_i$ 产生观测值 $v_j$ 的概率                           | 
-| $\pi = \pi_1, \pi_2, \dots, \pi_n$           |        起始概率: 隐藏状态 $s_i$成为第一个隐藏状态的概率，$\sum_{i=1}^N \pi_i = 1$ | 
+| $\pi = \pi_1, \pi_2, \dots, \pi_n$            |        起始概率: 隐藏状态 $s_i$成为第一个隐藏状态的概率，$\sum_{i=1}^N \pi_i = 1$ | 
 
 ### HMM的参数
 
@@ -62,47 +61,54 @@ $$
 
 ---
 
-## HMM要解决的问题
-
-### 似然
-
-#### 问题定义
+## HMM的问题 - 似然
 
 对于HMM $\lambda = (A, B, \pi)$ 和观测序列 $O$, 求观测序列的似然 $P(O \mathrel | \lambda)$。  ( 以下省略 $\lambda$ ) 
 
-#### 前向算法
+### 前向算法
 
-$$
-P(O) = \sum_{i=1}^N P(o_i^T, q_T=S_i) 
-$$
+令 $ \alpha_t(i) = P(o_1^t, q_t=S_i)$ 则似然观测概率的似然可以表示为: 
 
-this is a test
 
 \begin{align}
+P(O)    &= \sum_{i=1}^N P(o_i^T, q_T=S_i) \\
+        &= \sum_{i=1}^N \alpha_T(i)
+\end{align}
+
+#### 前向递归式的证明
+\begin{align}
 \alpha_t(i) &=  P(o_1^t, q_t=S_i)\\
-            &=  \sum_{j=1}^N P(o_1^t, q_{t-1}=S_j, q_t=S_i)\\
-            &=  \sum_{j=1}^N P(o_1^{t-1}, q_{t-1}=S_j, q_t=S_i) \cdot
+            &=  \sum_{j=1}^N P(o_1^t, q_{t-1}=S_j, q_t=S_i) \\
+            &=  \sum_{j=1}^N P(o_1^{t-1}, q_{t-1}=S_j, q_t=S_i) \cdot P(o_t \mathrel | o_1^{t-1}, q_{t-1}=S_j, q_t=S_i) \\
+            &=  \sum_{j=1}^N P(o_1^{t-1}, q_{t-1}=S_j, q_t=S_i) \cdot P(o_t \mathrel | q_t=S_i) \\
+            &=  \sum_{j=1}^N P(o_1^{t-1}, q_{t-1}=S_j) \cdot P(q_t=S_i \mathrel | o_1^{t-1}, q_{t-1}=S_j) \cdot P(o_t \mathrel | q_t=S_i) \\
+            &=  \sum_{j=1}^N P(o_1^{t-1}, q_{t-1}=S_j) \cdot P(q_t=S_i \mathrel | q_{t-1}=S_j) \cdot P(o_t \mathrel | q_t=S_i) \\
+            &=  \sum_{j=1}^N \alpha_{t-1}(j) \cdot a_{ji} \cdot b_i(o_t)
 \end{align}
 
 ---
 
+## HMM的问题 - 解码
 
-### 解码
+对于HMM $\lambda = (A, B, \pi)$ 和观测序列 $O$, 求最可能的状态序列 $Q$, 即:
 
-#### 问题定义
+\begin{align}
+Q   &= \underset{\theta}{\mathrm{argmax}}\ P(Q \mathrel | O) \\
+    &= \underset{\theta}{\mathrm{argmax}}\ \frac{P(q_1^T, o_1^T)}{P(o_1^T)} \\
+    &= \underset{\theta}{\mathrm{argmax}}\ P(q_1^T, o_1^T)
+\end{align}
+
+### Viterbi 算法
+
+Q = 
+
+
+## HMM的问题 - 参数训练
+
+### 问题定义
 
 对于HMM $\lambda = (A, B, \pi)$ 和观测序列 $O$, 求观测序列的似然 $P(O\mathrel | \lambda)$ 
 
-#### 解决方案
-
-test
-
-### 训练
-
-#### 问题定义
-
-对于HMM $\lambda = (A, B, \pi)$ 和观测序列 $O$, 求观测序列的似然 $P(O\mathrel | \lambda)$ 
-
-#### 解决方案
+### 解决方案
 
 test
