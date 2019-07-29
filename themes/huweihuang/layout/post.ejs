@@ -34,6 +34,12 @@ layout: layout
 
                 <br>
 
+                <!-- mathjax -->
+                <% if(config['reward']) { %>
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+                <% } %>
+                <!-- mathjax -->
+
                 <!--打赏-->
                 <% if(config['reward']) { %>
                     <div class="reward">
