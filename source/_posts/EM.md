@@ -161,6 +161,8 @@ $$
 J(\theta) = E_{Z\sim P(Z \mathrel | Y, \theta_i)} [\log (P(Y,Z \mathrel | \theta)))] \\
 $$
 
+在M步求导时 $P(Z \mathrel | Y, \theta_i)$ 对于各个参数的更新公式来说都是常数项, 因此在E步还要计算出**隐藏状态关于观测值和上一轮参数的后验概率** $P(Z \mathrel | Y, \theta_i)$。
+
 ### M步
 
 对 $J(\theta)$ 关于 $\theta$ 求导等于0, 得到 $\theta_{i+1}$:
