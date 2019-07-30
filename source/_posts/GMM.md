@@ -114,7 +114,7 @@ $$
                                           &= \frac{\partial \sum_{i=1}^N \gamma_i(k) \cdot (-\frac{1}{2} (x^{(i)}-\mu_k)^T \Sigma_k^{-1} (x^{(i)}-\mu_k))}{\partial \mu_k} \\
                                           &= \frac{\partial \sum_{i=1}^N \gamma_i(k) \cdot (-\frac{1}{2} (x^{(i)}-\mu_k)^T \Sigma_k^{-1} (x^{(i)}-\mu_k))}{\partial (x^{(i)} - \mu_k)} \cdot \frac{\partial (x^{(i)} - \mu_k)}{\partial \mu_k}\\
                                           &= \frac{1}{2} \sum_{i=1}^N \gamma_i(k) \frac{\partial (x^{(i)}-\mu_k)^T \Sigma_k^{-1} (x^{(i)}-\mu_k)}{\partial (x^{(i)} - \mu_k)}\\
-                                          &= \frac{1}{2} \sum_{i=1}^N \gamma_i(k) \frac{\partial tr((x^{(i)}-\mu_k)^T \Sigma_k^{-1} (x^{(i)}-\mu_k))}{\partial (x^{(i)} - \mu_k)}\\
+                                          &= \frac{1}{2} \sum_{i=1}^N \gamma_i(k) \frac{\partial tr[(x^{(i)}-\mu_k)^T \Sigma_k^{-1} (x^{(i)}-\mu_k)]}{\partial (x^{(i)} - \mu_k)}\\
                                           &= \frac{1}{2} \sum_{i=1}^N \gamma_i(k) \cdot (x^{(i)} - \mu_k) \cdot (\Sigma_k^{-1} + (\Sigma_k^{-1})^T) \\
                                           &= \sum_{i=1}^N \gamma_i(k) \cdot (x^{(i)} - \mu_k) \cdot \Sigma_k^{-1} \\
                                           &= 0

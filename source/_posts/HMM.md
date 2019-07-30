@@ -17,7 +17,7 @@ catagories:
 
 > 本文记录了HMM模型的基本理论及其EM算法的优化
 
-### HMM 的组成
+## HMM 的组成
 
 ** HMM的参数: $ \lambda = (A, B, \pi) $**
 
@@ -40,7 +40,7 @@ catagories:
 
 ---
 
-### HMM 的基本假设
+## HMM 的基本假设
 
 1. 马尔科夫假设
 $$
@@ -55,11 +55,11 @@ $$
 
 ---
 
-### HMM - 似然 (Likelihood)
+## HMM - 似然 (Likelihood)
 
 对于HMM $\lambda = (A, B, \pi)$ 和观测序列 $O$, 求观测序列的似然 $P(O \mathrel | \lambda)$。  ( 以下省略 $\lambda$ ) 
 
-#### 前向算法 (Forward Algoithm)
+### 前向算法 (Forward Algoithm)
 
 令 $ \alpha_t(i) = P(o_1^t, q_t=S_i)$ , 则似然观测概率的似然可以表示为: 
 
@@ -69,7 +69,7 @@ P(O)    &= \sum_{i=1}^N P(o_i^T, q_T=S_i) \\
         &= \sum_{i=1}^N \alpha_T(i)
 \end{align}
 
-##### 前向递归式
+#### 前向递归式
 \begin{align}
 \alpha_t(i) &=  P(o_1^t, q_t=S_i)\\
             &=  \sum_{j=1}^N P(o_1^t, q_{t-1}=S_j, q_t=S_i) \\
@@ -89,13 +89,13 @@ P(O)    &= \sum_{i=1}^N P(o_i^T, q_T=S_i) \\
 
 ---
 
-### HMM - 解码 (Decoding)
+## HMM - 解码 (Decoding)
 
 对于HMM $\lambda = (A, B, \pi)$ 和观测序列 $O$, 求最可能的状态序列 $Q$:
 \begin{align}
 Q   &= \underset{q_1^T}{\mathrm{argmax}}\ P(Q \mathrel | Q) \\
-    &= \underset{q_1^T}{\mathrm{argmax}}\ \frac{P(q_1^T, o_1^T)}{P(o_1^T)} \\
-    &= \underset{q_1^T}{\mathrm{argmax}}\ P(q_1^T, o_1^T) 
+    &= \underset{q_1^T}{\mathrm{argmax}}\ \frac{P(o_1^T, q_1^T)}{P(o_1^T)} \\
+    &= \underset{q_1^T}{\mathrm{argmax}}\ P(o_1^T, q_1^T) 
 \end{align}
 
 令:
@@ -106,15 +106,16 @@ $$
 则 $Q$ 的最后一个状态为:
 $$
 \begin{align}
-q_T &= \underset{q_1^{T-1}}{\mathrm{argmax}}\ \max_{i=1}^N P(q_1^{T-1}, o_1^T, q_T=S_i) \\
-    &= \underset{i}{\mathrm{argmax}}\ \max_{q_1^{T-1}} P(q_1^{T-1}, o_1^T, q_T=S_i) \\
+q_T &= \underset{q_T}{\mathrm{argmax}}\ P(o_1^T, q_1^T) \\
+    &= \underset{q_T}{\mathrm{argmax}}\ \max_{q_1^{T-1}} P(o_1^T, q_1^{T-1}, q_T) \\
+    &= \underset{i}{\mathrm{argmax}}\ \max_{q_1^{T-1}} P(o_1^T, q_1^{T-1}, q_T=S_i) \\
     &= \underset{i}{\mathrm{argmax}}\ \delta_i(T)
 \end{align}\label{eq:viterbi-last-state}\tag{1}
 $$
 
-#### Viterbi 算法
+### Viterbi 算法
 
-##### 递归 (Recursion)
+#### 递归 (Recursion)
 
 $$
 \begin{align}
@@ -137,7 +138,7 @@ $$
 
 此时，将递归式 Eq.(\ref{eq:viterbi-recursion}) 应用到 Eq.(\ref{eq:viterbi-last-state}) 中可以得到最可能路径的最后一个状态。
 
-##### 回溯 (Traceback)
+#### 回溯 (Traceback)
 已知最可能路径中的第 $t+1$ 个状态 $q_{t+1}^\*$, 求该路径中的第 $t$ 个状态:
 
 \begin{align}
@@ -153,7 +154,7 @@ q_t &= \underset{i}{\mathrm{argmax}}\ \max_{q_1^{t-1}, q_{t+2}^T} P(q_1^{t-1}, q
 
 ---
 
-### HMM - 后验解码 (Posterior Decoding)
+## HMM - 后验解码 (Posterior Decoding)
 
 对于HMM $\lambda = (A, B, \pi)$ 和观测序列 $O$, 求时间$t$处的最可能状态:
 
@@ -177,7 +178,7 @@ P(q_t=S_i \mathrel |o_1^T)  &= \frac{P(q_t=S_i, o_1^T)}{\sum_{k=1}^N P(q_t=S_k, 
                             &= \frac{\alpha_i(t)\cdot \beta_i(t)}{\sum_{k=1}^N \alpha_i(k)\cdot \beta_i(k)} \\
 \end{align}
 
-#### 后向递归式
+### 后向递归式
 
 \begin{align}
 \beta_i(t) &= P(o_{t+1}^T \mathrel | q_t=S_i) \\
@@ -192,13 +193,13 @@ P(q_t=S_i \mathrel |o_1^T)  &= \frac{P(q_t=S_i, o_1^T)}{\sum_{k=1}^N P(q_t=S_k, 
 
 ---
 
-### HMM - 参数训练 (Parameter Learning)
+## HMM - 参数训练 (Parameter Learning)
 
 对于观测序列 $O$, 求HMM参数 $\lambda=(A, B, \pi)$ 的最大似然估计:
 
-#### EM 算法
+### [EM 算法](/article/EM)
 
-##### E步
+#### E步
 
 EM算法的通用E步期望公式:
 
@@ -207,16 +208,86 @@ H(\theta, P(Z\mathrel | Y, \hat{\theta})) &= E_{Z\sim P(Z\mathrel | Y, \hat{\the
                         &= \sum_Z P(Z\mathrel | Y, \hat{\theta}) \cdot \log P(Y,Z \mathrel | \theta)
 \end{align}
 
-代入HMM的参数:
+代入HMM的参数, 以一个样本为例:
 
 \begin{align}
-H(\lambda, P(O\mathrel | Q, \hat{\lambda})) &= \sum_Q P(O\mathrel | Q, \hat{\lambda}) \cdot \log P(O,Q \mathrel | \lambda) \\
-                                            &= \sum_Q P(O\mathrel | Q, \hat{\lambda}) \cdot \log (P(q_1)\cdot P(o_1 \mathrel | q_1)\prod_{t=2}^T P(q_{t-1} \mathrel | q_t) \cdot P(o_1 \mathrel | q_1)) \\
-                                            &= \sum_Q P(O\mathrel | Q, \hat{\lambda}) \cdot \log (\pi_{q_1}\cdot b_{q_1}(o_1)\prod_{t=2}^T a_{q_{t-1}q_{t}} \cdot b_{q_t}(o_t)) \\
-                                            &= (\sum_Q P(O\mathrel | Q, \hat{\lambda}) \cdot \log (\pi_{q_1})) + (\sum_Q P(O\mathrel | Q, \hat{\lambda}) \cdot \sum_{t=1}^T \log b_{q_t}(o_t)) + (\sum_Q P(O\mathrel | Q, \hat{\lambda}) \cdot \sum_{t=2}^T \log a_{q_{t-1}q_{t}})
+H(\lambda, P(Q\mathrel | O, \hat{\lambda})) &= \sum_Q P(Q\mathrel | O, \hat{\lambda}) \cdot \log P(O,Q \mathrel | \lambda) \\
+                                            &= \sum_Q P(Q\mathrel | O, \hat{\lambda}) \cdot \log (P(q_1)\cdot P(o_1 \mathrel | q_1)\prod_{t=2}^T P(q_{t} \mathrel | q_{t-1}) \cdot P(o_t \mathrel | q_t)) \\
+                                            &= \sum_Q P(Q\mathrel | O, \hat{\lambda}) \cdot \log (\pi_{q_1}\cdot b_{q_1}(o_1)\prod_{t=2}^T a_{q_{t-1}q_{t}} \cdot b_{q_t}(o_t)) \\
+                                            &= (\sum_Q P(Q\mathrel | O, \hat{\lambda}) \cdot \log (\pi_{q_1})) + (\sum_Q P(Q\mathrel | O, \hat{\lambda}) \cdot \sum_{t=1}^T \log b_{q_t}(o_t)) + (\sum_Q P(Q\mathrel | O, \hat{\lambda}) \cdot \sum_{t=2}^T \log a_{q_{t-1}q_{t}})
 \end{align}
  
-##### M步
+#### M步
+
+##### $\pi$
+
+$\pi$ 满足限制条件 $\sum_{i=1}^N \pi_i = 1$, 应用拉尔朗日乘数法，求导式变为:
+$$
+G(\theta) = J(\theta) + \Lambda(1 - \sum_{i=1}^N \pi_i)
+$$
+
+对 $\pi_i$ 求导:
+\begin{align}
+\frac{\partial G(\theta)}{\partial \pi_i} &= \frac{\partial [(\sum\limits_Q P(Q\mathrel | O, \hat{\lambda}) \cdot \log (\pi_{q_1})) + \Lambda(1 - \sum_{i=1}^N \pi_i)]}{\partial \pi_i} \\
+                                          &= \frac{\partial [\sum\limits_Q P(Q\mathrel | O, \hat{\lambda}) \cdot \log (\pi_{q_1})]}{\partial \pi_i} - \Lambda \\
+                                          &= \frac{\partial [\sum\limits_{q_2^T} \sum\limits_{i=1}^N P(q_2^T, q_1=S_i \mathrel | O, \hat{\lambda}) \cdot \log (\pi_i)]}{\partial \pi_i} - \Lambda \\
+                                          &= \frac{\partial [\sum\limits_{i=1}^N P(q_1=S_i \mathrel | O, \hat{\lambda}) \cdot \log (\pi_i)]}{\partial \pi_i} - \Lambda \\
+                                          &= \frac{\sum\limits_{i=1}^N P(q_1=S_i \mathrel | O, \hat{\lambda})}{\pi_i} - \Lambda \\
+                                          &= 0
+\end{align}
 
 
+即:
+$$
+\pi_i = \frac{\sum\limits_{i=1}^N P(q_1=S_i \mathrel | O, \hat{\lambda})}{\Lambda}
+$$
+ 
+又:
+\begin{align}
+\because\quad & \sum_{i=1}^N \pi_i = 1 \\
+\therefore\quad & \frac{\sum\limits_{i=1}^N P(q_1=S_i \mathrel | O, \hat{\lambda})}{\Lambda} = 1 \\
+& \Lambda = 1
+\end{align}
 
+故 $\pi_i$的更新公式为:
+\begin{align}
+\pi_i &= \sum\limits_{i=1}^N P(q_1=S_i \mathrel | O, \hat{\lambda}) \\
+      &= \frac{\sum\limits_{i=1}^N P(q_1=S_i, O \mathrel | \hat{\lambda})}{P(O \mathrel | \hat{\lambda})} \\
+\end{align}
+
+##### $\alpha$
+
+$\alpha_{ij}$ 满足限制条件 $\sum_{j=1}^N \alpha_{ij} = 1$, 应用拉尔朗日乘数法，求导式变为:
+$$
+G(\theta) = J(\theta) + \Lambda(1 - \sum_{j=1}^N \alpha_{ij})
+$$
+
+对 $\alpha_{ij}$ 求导:
+\begin{align}
+\frac{\partial G(\theta)}{\partial \alpha_{ij}} &= \frac{\partial [(\sum\limits_Q P(Q\mathrel | O, \hat{\lambda}) \cdot \sum\limits_{t=2}^T \log a_{q_{t-1}q_{t}}) + \Lambda(1 - \sum\limits_{j=1}^N \alpha_{ij})]}{\partial \alpha_{ij}} \\
+                                                &= \frac{\partial  (\sum\limits_Q P(Q\mathrel | O, \hat{\lambda}) \cdot \sum\limits_{t=2}^T \log a_{q_{t-1}q_{t}})}{\partial \alpha_{ij}}  - \Lambda \\
+                                          &= \frac{\partial [\sum\limits_Q P(Q\mathrel | O, \hat{\lambda}) \cdot \log (\pi_{q_1})]}{\partial \pi_i} - \Lambda \\
+                                          &= \frac{\partial [\sum\limits_{q_2^T} \sum\limits_{i=1}^N P(q_2^T, q_1=S_i \mathrel | O, \hat{\lambda}) \cdot \log (\pi_i)]}{\partial \pi_i} - \Lambda \\
+                                          &= \frac{\partial [\sum\limits_{i=1}^N P(q_1=S_i \mathrel | O, \hat{\lambda}) \cdot \log (\pi_i)]}{\partial \pi_i} - \Lambda \\
+                                          &= \frac{\sum\limits_{i=1}^N P(q_1=S_i \mathrel | O, \hat{\lambda})}{\pi_i} - \Lambda \\
+                                          &= 0
+\end{align}
+
+
+即:
+$$
+\pi_i = \frac{\sum\limits_{i=1}^N P(q_1=S_i \mathrel | O, \hat{\lambda})}{\Lambda}
+$$
+ 
+又:
+\begin{align}
+\because\quad & \sum_{i=1}^N \pi_i = 1 \\
+\therefore\quad & \frac{\sum\limits_{i=1}^N P(q_1=S_i \mathrel | O, \hat{\lambda})}{\Lambda} = 1 \\
+& \Lambda = 1
+\end{align}
+
+故 $\pi_i$的更新公式为:
+\begin{align}
+\pi_i &= \sum\limits_{i=1}^N P(q_1=S_i \mathrel | O, \hat{\lambda}) \\
+      &= \frac{\sum\limits_{i=1}^N P(q_1=S_i, O \mathrel | \hat{\lambda})}{P(O \mathrel | \hat{\lambda})} \\
+\end{align}
