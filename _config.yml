@@ -109,18 +109,12 @@ featured-condition-size: 0              # A tag will be featured if the size of 
 ## Friends
 friends: [
     {
-        title: "CSDN Blog 胡伟煌",
-        href: "http://blog.csdn.net/huwh_"
-    },
-    {
-        title: "阿里云栖社区 胡伟煌",
-        href: "https://yq.aliyun.com/u/huweihuang"
-    }
-]
+        title: "SJTU 陈正阳",
+        href: "https://www.chenzhengyang.cn/"
+    }]
 
 
 #Custom Setting End
-
 
 
 # Directory

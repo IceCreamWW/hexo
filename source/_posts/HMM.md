@@ -1,9 +1,9 @@
 ---
-title: "[Model] HMM model"
+title: "[Model] HMM"
 catalog: true
 toc_nav_num: true
 date: 2019-07-22 17:05:21
-subtitle: "HMM model derivation"
+subtitle: "HMM derivation"
 header-img: "Demo.png"
 top: 0
 tags:
@@ -148,7 +148,7 @@ q_t &= \underset{i}{\mathrm{argmax}}\ \max_{q_1^{t-1}, q_{t+2}^T} P(q_1^{t-1}, q
     &= \underset{i}{\mathrm{argmax}}\ \max_{q_1^{t-1}} P(q_1^{t-1}, q_{t+1}^\*, q_t=S_i, o_1^t) \cdot \max_{q_{t+2}^T} P(o_{t+1}^T, q_{t+2}^T \mathrel | q_{t+1}^\*) \\
     &= \underset{i}{\mathrm{argmax}}\ \max_{q_1^{t-1}} P(q_1^{t-1}, q_{t+1}^\*, q_t=S_i, o_1^t) \\
     &= \underset{i}{\mathrm{argmax}}\ \max_{q_1^{t-1}} P(q_1^{t-1}, q_t=S_i, o_1^t) \cdot P(q_{t+1}^\* \mathrel | q_1^{t-1}, q_t=S_i, o_1^t) \\
-    &= \underset{i}{\mathrm{argmax}}\ \max_{q_1^{t-1}} P(q_1^{t-1}, q_t=S_i, o_1^t) \cdot P(q_{t+1}^\* \mathrel | q_{t-1}) \\
+    &= \underset{i}{\mathrm{argmax}}\ \max_{q_1^{t-1}} P(q_1^{t-1}, q_t=S_i, o_1^t) \cdot P(q_{t+1}^\* \mathrel | q_t=S_i) \\
     &= \underset{i}{\mathrm{argmax}}\ \delta_i(t) \cdot a_{iq_{t+1}^*}
 \end{align}
 
@@ -189,8 +189,15 @@ P(q_t=S_i \mathrel |o_1^T)  &= \frac{P(q_t=S_i, o_1^T)}{\sum_{k=1}^N P(q_t=S_k, 
            &= \sum_{j=1}^N P(o_{t+2}^T \mathrel | q_{t+1}=S_j) \cdot P(o_{t+1} \mathrel | o_{t+2}^T, q_{t+1}=S_j) \cdot P(q_{t+1}=S_j \mathrel | q_{t}=S_i) \\
            &= \sum_{j=1}^N P(o_{t+2}^T \mathrel | q_{t+1}=S_j) \cdot P(o_{t+1} \mathrel | q_{t+1}=S_j) \cdot P(q_{t+1}=S_j \mathrel | q_{t}=S_i) \\
            &= b_j(o_{t+1}) \cdot \sum_{j=1}^N P(o_{t+2}^T \mathrel | q_{t+1}=S_j) \cdot a_{ij} \\
+           &= b_j(o_{t+1}) \cdot \sum_{j=1}^N \beta_j(t+1) \cdot a_{ij}
 \end{align}
 
+
+为了使 $\beta_{T-1}(i) = P(o_T \mathrel | q_{T-1}=S_i)$ 计算正确, 取 $\beta$ 的初值为:
+
+$$
+\beta_T(i) = 1
+$$
 
 ---
 

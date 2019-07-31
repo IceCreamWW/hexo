@@ -27,5 +27,5 @@ catagories:
     2. 先hexo init后git init，否则会从根目录push。需要重新hexo init并转移文件
 
 ## module
-- 找不到module, npm install module-name, 速度慢，加命令行代理proxychains4  
-参考: https://www.hi-linux.com/posts/48321.html
+- 找不到module: ```npm install module-name```
+- 速度慢，[加命令行代理proxychains4](https://www.hi-linux.com/posts/48321.html)

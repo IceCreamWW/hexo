@@ -1,9 +1,9 @@
 ---
-title: "[Model] GMM model"
+title: "[Model] GMM"
 catalog: true
 toc_nav_num: true
 date: 2019-07-22 17:05:15
-subtitle: "GMM model derivation"
+subtitle: "GMM derivation"
 header-img: "Demo.png"
 top: 0
 tags:
