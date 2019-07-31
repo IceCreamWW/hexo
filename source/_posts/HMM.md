@@ -165,6 +165,7 @@ q_t &= \underset{i}{\mathrm{argmax}}\ P(q_t=S_i \mathrel | O)  \\
     &= \underset{i}{\mathrm{argmax}}\ \frac{P(q_t=S_i, o_1^T)}{\sum_{k=1}^N P(q_t=S_k, o_1^T)} 
 \end{align}
 
+### 后向算法 (Backward Algorithm)
 令:
 $$
 \beta_i(t) = P(o_{t+1}^T \mathrel | q_t=S_i)
@@ -178,7 +179,7 @@ P(q_t=S_i \mathrel |o_1^T)  &= \frac{P(q_t=S_i, o_1^T)}{\sum_{k=1}^N P(q_t=S_k, 
                             &= \frac{\alpha_i(t)\cdot \beta_i(t)}{\sum_{k=1}^N \alpha_i(k)\cdot \beta_i(k)} \\
 \end{align}
 
-### 后向递归式
+#### 后向递归式
 
 \begin{align}
 \beta_i(t) &= P(o_{t+1}^T \mathrel | q_t=S_i) \\
@@ -196,6 +197,49 @@ P(q_t=S_i \mathrel |o_1^T)  &= \frac{P(q_t=S_i, o_1^T)}{\sum_{k=1}^N P(q_t=S_k, 
 ## HMM - 参数训练 (Parameter Learning)
 
 对于观测序列 $O$, 求HMM参数 $\lambda=(A, B, \pi)$ 的最大似然估计:
+
+### 符号定义及其计算
+
+#### $I(x)$
+
+$$
+I(x)=
+\begin{cases}
+0& x \neq 1\\
+1& x=1
+\end{cases}
+$$
+
+---
+
+#### $\gamma_t(i)$
+
+\begin{align}
+\gamma_t(i) &= P(q_t = S_i \mathrel | O, \hat{\lambda}) \\
+            &= \frac{P(q_t = S_i, O \mathrel | \hat{\lambda})}{P(O \mathrel | \hat{\lambda})} \\
+            &= \frac{P(q_t = S_i, o_1^t, o_{t+1}^T \mathrel | \hat{\lambda})}{P(O \mathrel | \hat{\lambda})} \\
+            &= \frac{P(q_t = S_i, o_1^t \mathrel | \hat{\lambda}) \cdot P(o_{t+1}^T \mathrel | o_1^t, q_t=S_i, \hat{\lambda})}{P(O \mathrel | \hat{\lambda})} \\
+            &= \frac{P(q_t = S_i, o_1^t \mathrel | \hat{\lambda}) \cdot P(o_{t+1}^T \mathrel | q_t=S_i, \hat{\lambda})}{\sum_{j=1}^N P(q_t=S_j, O \mathrel | \hat{\lambda})} \\
+            &= \frac{\alpha_t(i)\beta_t(i)}{\sum_{j=1}^N \alpha_t(j)\beta_t(j)} \\
+\end{align}
+
+---
+
+#### $\xi_t(i, j) $
+
+\begin{align}
+\xi_t(i,j) &= P(q_{t-1}=i, q_t=j \mathrel | O, \hat{\lambda}) \\
+           &= \frac{P(q_{t-1}=i, q_t=j, O \mathrel | \hat{\lambda})}{P(O \mathrel | \hat{\lambda})} \\
+           &= \frac{P(q_{t-1}=i, q_t=j, o_1^{t-1}, o_t, o_{t+1}^T \mathrel | \hat{\lambda})}{P(O \mathrel | \hat{\lambda})} \\
+           &= \frac{P(q_{t-1}=i, o_1^{t-1} \mathrel | \hat{\lambda}) \cdot P(q_t=j, o_t, o_{t+1}^T \mathrel | q_{t-1}=i, o_1^{t-1} ,\hat{\lambda})}{P(O \mathrel | \hat{\lambda})} \\
+           &= \frac{\alpha_{t-1}(i) \cdot P(q_t=j \mathrel | q_{t-1}=i, o_1^{t-1}, \hat{\lambda}) \cdot P(o_t, o_{t+1}^T \mathrel | q_{t-1}=i, q_t=j, o_1^{t-1} ,\hat{\lambda})}{P(O \mathrel | \hat{\lambda})} \\
+           &= \frac{\alpha_{t-1}(i) \cdot P(q_t=j \mathrel | q_{t-1}=i \hat{\lambda}) \cdot P(o_t, o_{t+1}^T \mathrel | q_t=j ,\hat{\lambda})}{P(O \mathrel | \hat{\lambda})} \\
+           &= \frac{\alpha_{t-1}(i) \cdot a_{ij} \cdot P(o_t \mathrel | q_t=j ,\hat{\lambda}) \cdot P(o_{t+1}^T \mathrel | q_t=j, o_t, \lambda)}{P(O \mathrel | \hat{\lambda})} \\
+           &= \frac{\alpha_{t-1}(i) \cdot a_{ij} \cdot b_j(o_t) \cdot \beta_t(j)}{P(O \mathrel | \hat{\lambda})} \\
+           &= \frac{\alpha_{t-1}(i) \cdot a_{ij} \cdot b_j(o_t) \cdot \beta_t(j)}{\sum_{i=1}^N \sum_{j=1}^N \alpha_{t-1}(i) \cdot a_{ij} \cdot b_j(o_t) \cdot \beta_t(j)}
+\end{align}
+
+---
 
 ### [EM 算法](/article/EM)
 
@@ -217,6 +261,8 @@ H(\lambda, P(Q\mathrel | O, \hat{\lambda})) &= \sum_Q P(Q\mathrel | O, \hat{\lam
                                             &= (\sum_Q P(Q\mathrel | O, \hat{\lambda}) \cdot \log (\pi_{q_1})) + (\sum_Q P(Q\mathrel | O, \hat{\lambda}) \cdot \sum_{t=1}^T \log b_{q_t}(o_t)) + (\sum_Q P(Q\mathrel | O, \hat{\lambda}) \cdot \sum_{t=2}^T \log a_{q_{t-1}q_{t}})
 \end{align}
  
+---
+
 #### M步
 
 ##### $\pi$
@@ -251,43 +297,100 @@ $$
 
 故 $\pi_i$的更新公式为:
 \begin{align}
-\pi_i &= \sum\limits_{i=1}^N P(q_1=S_i \mathrel | O, \hat{\lambda}) \\
-      &= \frac{\sum\limits_{i=1}^N P(q_1=S_i, O \mathrel | \hat{\lambda})}{P(O \mathrel | \hat{\lambda})} \\
+\pi_i &= \sum\limits_{i=1}^N P(q_1=S_i \mathrel | O, \hat{\lambda})
 \end{align}
 
-##### $\alpha$
+---
 
-$\alpha_{ij}$ 满足限制条件 $\sum_{j=1}^N \alpha_{ij} = 1$, 应用拉尔朗日乘数法，求导式变为:
+##### $A$
+
+$a_{ij}$ 满足限制条件 $\sum_{j=1}^N \alpha_{ij} = 1$, 应用拉尔朗日乘数法，求导式变为:
 $$
-G(\theta) = J(\theta) + \Lambda(1 - \sum_{j=1}^N \alpha_{ij})
+G(\theta) = J(\theta) + \Lambda(1 - \sum_{j=1}^N a_{ij})
 $$
 
-对 $\alpha_{ij}$ 求导:
+对 $a_{ij}$ 求导:
 \begin{align}
-\frac{\partial G(\theta)}{\partial \alpha_{ij}} &= \frac{\partial [(\sum\limits_Q P(Q\mathrel | O, \hat{\lambda}) \cdot \sum\limits_{t=2}^T \log a_{q_{t-1}q_{t}}) + \Lambda(1 - \sum\limits_{j=1}^N \alpha_{ij})]}{\partial \alpha_{ij}} \\
-                                                &= \frac{\partial  (\sum\limits_Q P(Q\mathrel | O, \hat{\lambda}) \cdot \sum\limits_{t=2}^T \log a_{q_{t-1}q_{t}})}{\partial \alpha_{ij}}  - \Lambda \\
-                                          &= \frac{\partial [\sum\limits_Q P(Q\mathrel | O, \hat{\lambda}) \cdot \log (\pi_{q_1})]}{\partial \pi_i} - \Lambda \\
-                                          &= \frac{\partial [\sum\limits_{q_2^T} \sum\limits_{i=1}^N P(q_2^T, q_1=S_i \mathrel | O, \hat{\lambda}) \cdot \log (\pi_i)]}{\partial \pi_i} - \Lambda \\
-                                          &= \frac{\partial [\sum\limits_{i=1}^N P(q_1=S_i \mathrel | O, \hat{\lambda}) \cdot \log (\pi_i)]}{\partial \pi_i} - \Lambda \\
-                                          &= \frac{\sum\limits_{i=1}^N P(q_1=S_i \mathrel | O, \hat{\lambda})}{\pi_i} - \Lambda \\
+\frac{\partial G(\theta)}{\partial a_{ij}} &= \frac{\partial [(\sum\limits_Q P(Q\mathrel | O, \hat{\lambda}) \cdot \sum\limits_{t=2}^T \log a_{q_{t-1}q_{t}}) + \Lambda(1 - \sum\limits_{j=1}^N a_{ij})]}{\partial a_{ij}} \\
+                                           &= \frac{\partial  (\sum\limits_{q_1^T} P(q_1^T\mathrel | O, \hat{\lambda}) \cdot \sum\limits_{t=2}^T \log a_{q_{t-1}q_{t}})}{\partial a_{ij}}  - \Lambda \\
+                                           &= \frac{\partial  (\sum\limits_{t=2}^T \sum\limits_{q_1^T} P(q_1^T\mathrel | O, \hat{\lambda}) \cdot  \log a_{q_{t-1}q_{t}})}{\partial a_{ij}}  - \Lambda \\
+                                           &= \frac{\partial  (\sum\limits_{t=2}^T \sum\limits_{q_1^{t-2}, q_{t+1}^T} \sum\limits_{q_{t-1}, q_t} P(q_1^{t-2}, q_{t-1}, q_t, q_{t+1}^T \mathrel | O, \hat{\lambda}) \cdot  \log a_{q_{t-1}q_{t}})}{\partial a_{ij}}  - \Lambda \\
+                                           &= \frac{\partial  (\sum\limits_{t=2}^T \sum\limits_{q_1^{t-2}, q_{t+1}^T} \sum\limits_{i=1}^N \sum\limits_{j=1}^N P(q_1^{t-2}, q_{t-1}=S_i, q_t=S_j, q_{t+1}^T \mathrel | O, \hat{\lambda}) \cdot  \log a_{ij})}{\partial a_{ij}}  - \Lambda \\
+                                           &= \frac{\partial  (\sum\limits_{t=2}^T \sum\limits_{i=1}^N \sum\limits_{j=1}^N P(q_{t-1}=S_i, q_t=S_j \mathrel | O, \hat{\lambda}) \cdot  \log a_{ij})}{\partial a_{ij}}  - \Lambda \\
+                                           &= \frac{\sum\limits_{t=2}^T P(q_{t-1}=S_i, q_t=S_j \mathrel | O, \hat{\lambda})}{a_{ij}}  - \Lambda \\
+                                           &= 0
+\end{align}
+
+
+即:
+$$
+a_{ij} = \frac{\sum\limits_{t=2}^T P(q_{t-1}=S_i, q_t=S_j \mathrel | O, \hat{\lambda})}{\Lambda}
+$$
+ 
+又:
+\begin{align}
+\because\quad & \sum_{j=1}^N a_{ij} = 1 \\
+\therefore\quad & \frac{\sum\limits_{t=2}^T \sum\limits_{j=1}^N P(q_{t-1}=S_i, q_t=S_j \mathrel | O, \hat{\lambda})}{\Lambda} = 1 \\
+& \Lambda = \sum\limits_{t=2}^T P(q_{t-1}=S_i \mathrel | O, \hat{\lambda}) \\
+\end{align}
+
+故 $a_{ij}$的更新公式为:
+\begin{align}
+a_{ij} &= \frac{\sum\limits_{t=2}^T P(q_{t-1}=S_i, q_t=S_j \mathrel | O, \hat{\lambda})}{\sum\limits_{t=2}^T P(q_{t-1}=S_i \mathrel | O, \hat{\lambda})} \\
+       &= \frac{\sum\limits_{t=2}^T \xi_t(i, j)}{\sum\limits_{t=2}^T \gamma_{t-1}(i)} \\
+\end{align}
+
+---
+
+##### $B$
+
+$b_i(v_k)$ 满足限制条件 $\sum_{k=1}^N b_i(v_k) = 1$, 应用拉尔朗日乘数法，求导式变为:
+$$
+G(\theta) = J(\theta) + \Lambda(1 - \sum_{k=1}^M b_i(v_k) = 1)
+$$
+
+对 $b_i(v_k)$ 求导:
+\begin{align}
+\frac{\partial G(\theta)}{\partial \pi_i} &= \frac{\partial (\sum\limits_Q P(Q\mathrel | O, \hat{\lambda}) \cdot \sum\limits_{t=1}^T \log b_{q_t}(o_t)) + \Lambda(1 - \sum\limits_{k=1}^M b_i(v_k) = 1)}{\partial b_i(v_k)} \\
+                                          &= \frac{\partial (\sum\limits_{q_1^T} P(q_1^T\mathrel | O, \hat{\lambda}) \cdot \sum\limits_{t=1}^T \log b_{q_t}(o_t))}{\partial b_i(v_k)} - \Lambda\\
+                                          &= \frac{\partial (\sum\limits_{t=1}^T \sum\limits_{q_1^T} P(q_1^T \mathrel | O, \hat{\lambda}) \cdot \log b_{q_t}(o_t))}{\partial b_i(v_k)} - \Lambda\\
+                                          &= \frac{\partial (\sum\limits_{t=1}^T \sum\limits_{q_1^{t-1}, q_{t+1}^T} \sum\limits_{i=1}^N P(q_1^{t-1}, q_t=S_i, q_{t+1}^T \mathrel | O, \hat{\lambda}) \cdot \log b_i(o_t))}{\partial b_i(v_k)} - \Lambda\\
+                                          &= \frac{\partial (\sum\limits_{t=1}^T \sum\limits_{i=1}^N P(q_t=S_i \mathrel | O, \hat{\lambda}) \cdot \log b_i(o_t))}{\partial b_i(v_k)} - \Lambda\\
+                                          &= \frac{\sum\limits_{t=1}^T P(q_t=S_i \mathrel | O, \hat{\lambda}) \cdot I(o_t=v_k)}{b_i(v_k)} - \Lambda\\
                                           &= 0
 \end{align}
 
 
 即:
 $$
-\pi_i = \frac{\sum\limits_{i=1}^N P(q_1=S_i \mathrel | O, \hat{\lambda})}{\Lambda}
+b_i(v_k) = \frac{\sum\limits_{t=1}^T P(q_t=S_i \mathrel | O, \hat{\lambda}) \cdot I(o_t=v_k)}{\Lambda}
 $$
  
 又:
 \begin{align}
-\because\quad & \sum_{i=1}^N \pi_i = 1 \\
-\therefore\quad & \frac{\sum\limits_{i=1}^N P(q_1=S_i \mathrel | O, \hat{\lambda})}{\Lambda} = 1 \\
-& \Lambda = 1
+\because\quad & \sum_{k=1}^M b_i(v_k) = 1 \\
+\therefore\quad & \frac{\sum\limits_{t=1}^T \sum\limits_{k=1}^M P(q_t=S_i \mathrel | O, \hat{\lambda}) \cdot I(o_t=v_k)}{\Lambda} = 1 \\
+& \Lambda = \sum\limits_{t=1}^T P(q_t=S_i \mathrel | O, \hat{\lambda})
 \end{align}
 
 故 $\pi_i$的更新公式为:
 \begin{align}
-\pi_i &= \sum\limits_{i=1}^N P(q_1=S_i \mathrel | O, \hat{\lambda}) \\
-      &= \frac{\sum\limits_{i=1}^N P(q_1=S_i, O \mathrel | \hat{\lambda})}{P(O \mathrel | \hat{\lambda})} \\
+b_i(v_k) &= \frac{\sum\limits_{t=1}^T P(q_t=S_i \mathrel | O, \hat{\lambda}) \cdot I(o_t=v_k)}{\sum\limits_{t=1}^T P(q_t=S_i \mathrel | O, \hat{\lambda})} \\
+         &= \frac{\sum\limits_{t=1}^T \gamma_t(i) \cdot I(o_t=v_k)}{\sum\limits_{t=1}^T \gamma_t(i)} \\
 \end{align}
+
+---
+
+#### 参数更新汇总
+
+$$
+\pi_i = \sum\limits_{i=1}^N P(q_1=S_i \mathrel | O, \hat{\lambda})
+$$
+
+$$
+a_{ij} = \frac{\sum\limits_{t=2}^T \xi_t(i, j)}{\sum\limits_{t=2}^T \gamma_{t-1}(i)} 
+$$
+
+$$
+b_i(v_k) = \frac{\sum\limits_{t=1}^T \gamma_t(i) \cdot I(o_t=v_k)}{\sum\limits_{t=1}^T \gamma_t(i)}
+$$
