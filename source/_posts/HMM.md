@@ -100,7 +100,7 @@ Q   &= \underset{q_1^T}{\mathrm{argmax}}\ P(Q \mathrel | Q) \\
 
 令:
 $$
-\delta_i(t) = \max_{q_1^{t-1}} P(o_1^t, q_1^{t-1}, q_t=S_i)
+\delta_t(i) = \max_{q_1^{t-1}} P(o_1^t, q_1^{t-1}, q_t=S_i)
 $$
 
 则 $Q$ 的最后一个状态为:
@@ -109,7 +109,7 @@ $$
 q_T &= \underset{q_T}{\mathrm{argmax}}\ P(o_1^T, q_1^T) \\
     &= \underset{q_T}{\mathrm{argmax}}\ \max_{q_1^{T-1}} P(o_1^T, q_1^{T-1}, q_T) \\
     &= \underset{i}{\mathrm{argmax}}\ \max_{q_1^{T-1}} P(o_1^T, q_1^{T-1}, q_T=S_i) \\
-    &= \underset{i}{\mathrm{argmax}}\ \delta_i(T)
+    &= \underset{i}{\mathrm{argmax}}\ \delta_T(i)
 \end{align}\label{eq:viterbi-last-state}\tag{1}
 $$
 
@@ -119,19 +119,19 @@ $$
 
 $$
 \begin{align}
-\delta_i(t) &= \max_{q_1^{t-1}} P(o_1^t, q_1^{t-1}, q_t=S_i) \\
+\delta_t(i) &= \max_{q_1^{t-1}} P(o_1^t, q_1^{t-1}, q_t=S_i) \\
             &= \max_{q_1^{t-1}} P(o_1^{t-1}, q_1^{t-1}, q_t=S_i) \cdot P(o_t \mathrel | o_1^{t-1}, q_1^{t-1}, q_t=S_i) \\
             &= \max_{q_1^{t-1}} P(o_1^{t-1}, q_1^{t-1}) \cdot P(q_t=S_i \mathrel | o_1^{t-1}, q_1^{t-1}) \cdot P(o_t \mathrel | q_t=S_i) \\
             &= b_i(o_t) \cdot \max_{q_1^{t-1}} P(o_1^{t-1}, q_1^{t-1}) \cdot P(q_t=S_i \mathrel | q_{t-1}) \\
             &= b_i(o_t) \cdot \max_{q_1^{t-2}} \max_{j=1}^N P(o_1^{t-1}, q_1^{t-2}, q_{t-1}=S_j) \cdot P(q_t=S_i \mathrel | q_{t-1}=S_j) \\
             &= b_i(o_t) \cdot \max_{j=1}^N P(q_t=S_i \mathrel | q_{t-1}=S_j) \cdot \max_{q_1^{t-2}} P(o_1^{t-1}, q_1^{t-2}, q_{t-1}=S_j) \\
-            &= b_i(o_t) \max_{j=1}^N a_{ji} \cdot \delta_j(t-1)
+            &= b_i(o_t) \max_{j=1}^N a_{ji} \cdot \delta_{t-1}(j)
 \end{align}\label{eq:viterbi-recursion}\tag{2}
 $$
 
 其中，初值:
 \begin{align}
-\delta_i(1) &= P(o_1, q_1=S_i) \\
+\delta_1(i) &= P(o_1, q_1=S_i) \\
             &= \pi_i \cdot b_i(o_1)  \\
             &= \alpha_1(i)
 \end{align}
@@ -149,7 +149,7 @@ q_t &= \underset{i}{\mathrm{argmax}}\ \max_{q_1^{t-1}, q_{t+2}^T} P(q_1^{t-1}, q
     &= \underset{i}{\mathrm{argmax}}\ \max_{q_1^{t-1}} P(q_1^{t-1}, q_{t+1}^\*, q_t=S_i, o_1^t) \\
     &= \underset{i}{\mathrm{argmax}}\ \max_{q_1^{t-1}} P(q_1^{t-1}, q_t=S_i, o_1^t) \cdot P(q_{t+1}^\* \mathrel | q_1^{t-1}, q_t=S_i, o_1^t) \\
     &= \underset{i}{\mathrm{argmax}}\ \max_{q_1^{t-1}} P(q_1^{t-1}, q_t=S_i, o_1^t) \cdot P(q_{t+1}^\* \mathrel | q_t=S_i) \\
-    &= \underset{i}{\mathrm{argmax}}\ \delta_i(t) \cdot a_{iq_{t+1}^*}
+    &= \underset{i}{\mathrm{argmax}}\ \delta_t(i) \cdot a_{iq_{t+1}^*}
 \end{align}
 
 ---
@@ -162,34 +162,35 @@ q_t &= \underset{i}{\mathrm{argmax}}\ \max_{q_1^{t-1}, q_{t+2}^T} P(q_1^{t-1}, q
 q_t &= \underset{i}{\mathrm{argmax}}\ P(q_t=S_i \mathrel | O)  \\
     &= \underset{i}{\mathrm{argmax}}\ \frac{P(q_t=S_i, o_1^T)}{P(o_1^T)}  \\
     &= \underset{i}{\mathrm{argmax}}\ \frac{P(q_t=S_i, o_1^T)}{P(o_1^T)}  \\
-    &= \underset{i}{\mathrm{argmax}}\ \frac{P(q_t=S_i, o_1^T)}{\sum_{k=1}^N P(q_t=S_k, o_1^T)} 
+    &= \underset{i}{\mathrm{argmax}}\ \frac{P(q_t=S_i, o_1^T)}{\sum_{k=1}^N P(q_t=S_k, o_1^T)} \\
+    &= \underset{i}{\mathrm{argmax}}\ \frac{P(q_t=S_i, o_1^t) \cdot P(o_{t+1}^T \mathrel | q_t=S_i)}{\sum_{k=1}^N P(q_t=S_k, o_1^T)} \\
+    &= \underset{i}{\mathrm{argmax}}\ \frac{\alpha_t(i) \cdot P(o_{t+1}^T \mathrel | q_t=S_i)}{\sum_{k=1}^N P(q_t=S_k, o_1^T)}
 \end{align}
 
 ### 后向算法 (Backward Algorithm)
 令:
 $$
-\beta_i(t) = P(o_{t+1}^T \mathrel | q_t=S_i)
+\beta_t(i) = P(o_{t+1}^T \mathrel | q_t=S_i)
 $$
 
 则 $t$ 时间处隐藏状态 $q_t$ 为 $S_i$ 的后验概率可表示为:
 \begin{align}
-P(q_t=S_i \mathrel |o_1^T)  &= \frac{P(q_t=S_i, o_1^T)}{\sum_{k=1}^N P(q_t=S_k, o_1^T)} \\
-                            &= \frac{P(q_t=S_i, o_1^t) \cdot P(o_{t+1}^T \mathrel | q_t=S_i, o_1^t)}{\sum_{k=1}^N P(q_t=S_k, o_1^T)}  \\
-                            &= \frac{P(q_t=S_i, o_1^t) \cdot P(o_{t+1}^T \mathrel | q_t=S_i)}{\sum_{k=1}^N P(q_t=S_k, o_1^T)} \\
-                            &= \frac{\alpha_i(t)\cdot \beta_i(t)}{\sum_{k=1}^N \alpha_i(k)\cdot \beta_i(k)} \\
+P(q_t=S_i \mathrel |o_1^T)  &= \frac{\alpha_t(i) \cdot P(o_{t+1}^T \mathrel | q_t=S_i, o_1^t)}{\sum_{k=1}^N P(q_t=S_k, o_1^T)}  \\
+                            &= \frac{\alpha_t(i) \cdot P(o_{t+1}^T \mathrel | q_t=S_i)}{\sum_{k=1}^N P(q_t=S_k, o_1^T)} \\
+                            &= \frac{\alpha_t(i) \cdot \beta_t(i)}{\sum_{k=1}^N \alpha_t(k)\cdot \beta_t(k)} \\
 \end{align}
 
 #### 后向递归式
 
 \begin{align}
-\beta_i(t) &= P(o_{t+1}^T \mathrel | q_t=S_i) \\
+\beta_t(i) &= P(o_{t+1}^T \mathrel | q_t=S_i) \\
            &= \sum_{j=1}^N \frac{P(o_{t+1}^T, q_t=S_i, q_{t+1}=S_j)}{P(q_t=S_i)} \\
            &= \sum_{j=1}^N \frac{P(o_{t+1}^T \mathrel |q_t=S_i, q_{t+1}=S_j) \cdot P(q_t=S_i, q_{t+1}=S_j)}{P(q_t=S_i)} \\
            &= \sum_{j=1}^N P(o_{t+1}^T \mathrel | q_{t+1}=S_j) \cdot P(q_{t+1}=S_j \mathrel | q_{t}=S_i) \\
            &= \sum_{j=1}^N P(o_{t+2}^T \mathrel | q_{t+1}=S_j) \cdot P(o_{t+1} \mathrel | o_{t+2}^T, q_{t+1}=S_j) \cdot P(q_{t+1}=S_j \mathrel | q_{t}=S_i) \\
            &= \sum_{j=1}^N P(o_{t+2}^T \mathrel | q_{t+1}=S_j) \cdot P(o_{t+1} \mathrel | q_{t+1}=S_j) \cdot P(q_{t+1}=S_j \mathrel | q_{t}=S_i) \\
            &= b_j(o_{t+1}) \cdot \sum_{j=1}^N P(o_{t+2}^T \mathrel | q_{t+1}=S_j) \cdot a_{ij} \\
-           &= b_j(o_{t+1}) \cdot \sum_{j=1}^N \beta_j(t+1) \cdot a_{ij}
+           &= b_j(o_{t+1}) \cdot \sum_{j=1}^N \beta_{t+1}(j) \cdot a_{ij}
 \end{align}
 
 
@@ -311,7 +312,7 @@ $$
 
 ##### $A$
 
-$a_{ij}$ 满足限制条件 $\sum_{j=1}^N \alpha_{ij} = 1$, 应用拉尔朗日乘数法，求导式变为:
+$a_{ij}$ 满足限制条件 $\sum_{j=1}^N a_{ij} = 1$, 应用拉尔朗日乘数法，求导式变为:
 $$
 G(\theta) = J(\theta) + \Lambda(1 - \sum_{j=1}^N a_{ij})
 $$
