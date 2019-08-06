@@ -63,53 +63,92 @@ FNR != NR {
 
 ```awk
 #! /bin/awk -f
-function get_frame_type(_frame2type, target)
+#
+# -------------------------------------------------------------------------------
+# Name:     compare_mlf.awk
+# Purpose:  give comparison of two or more standard mlf files
+# Author:   Wei Wang
+
+
+# -------------------------------------------------------------- get_frametype --
+# get the type of a frame given the uttid and file id
+#
+function get_frametype(fileidx, uttid, targetframe,
+                       endframe)
 {
+    # make sure frames are in numeric ascending order in fileidx_uttid_endframe2type[fileidx][uttid]
     PROCINFO["sorted_in"]="@ind_num_asc";
-    for (_frame in _frame2type)
-        if (_frame+0 >= target+0)
-            return _frame2type[_frame]==0 ? "sil":"spc";
-    return _frame2type[_frame]==0 ? "sil":"spc";
+    # forward search endframe to get the interval of target frame
+    for (endframe in fileidx_uttid_endframe2type[fileidx][uttid])
+        if (endframe+0 >= targetframe+0)
+            return fileidx_uttid_endframe2type[fileidx][uttid][endframe]==0 ? "sil":"spc";
+
+    # if target frame exceeds all end boundary frames,
+    # assume it to be of same type as the last frame interval
+    return fileidx_uttid_endframe2type[fileidx][uttid][endframe]==0 ? "sil":"spc";
 }
+
+# record it when the whole line consists of only one field (utterance id)
 NF==1{
     uttid=$1;
 }
+
+# $1: start boundary frame number
+# $2: end boundary frame number
+# $3: type of this frame interval "sil" / "spc"
 NF>1{
-    frame2type[ARGIND][uttid][$2+0] = ($3=="sil" ? 0:1);
-    frames[uttid][$2] = $2; 
+    # fileidx_uttid_frame2type
+        # map a end boundary frame to its type (silence or speech), 3D array
+            # dim1: file id (specified by ARGIND)
+            # dim2: uttid
+            # dim3: end boundary frame number
+            # value: 0/1
+    fileidx_uttid_endframe2type[ARGIND+0][uttid][$2+0] = ($3=="sil" ? 0:1);
+
+    # record all end boundary frames of a utterance
+    endframes[uttid][$2] = $2;
+    # record all utterances
     uttids[uttid]=uttid;
+    # record all files
     idx2file[ARGIND]=FILENAME;
 }
 END {
     printf "%-8s%-8s%-9s", "start", "end", "durat";
-    for (idx_file in idx2file)
-        printf "%-8s", substr(idx2file[idx_file], 1,7);
+
+    # truncate the first 7 characters to be displayed as file name
+    for (idx in idx2file)
+        printf "%-8s", substr(idx2file[idx], 1,7);
     printf "%-8s\n\n", "judge";
 
+    # make sure utterance info are output in ascending order (not necessary for correctness)
     PROCINFO["sorted_in"]="@ind_str_asc";
     for (uttid in uttids)
-    {   
+    {
         print uttid;
-        start=0;
+        startframe=0;
+
+        # make sure endframes are sorted in numeric ascending order (necessary for algorithm correctness)
         PROCINFO["sorted_in"]="@ind_num_asc";
-        for(frame in frames[uttid])
+        for(endframe in endframes[uttid])
         {
-            if (frame+0 <= start+0)  continue;
-            printf "%-8s%-8s%-9s", start, frame, frame - start;
-            judge = "same"; _type=-1;
-            for (idx_file in idx2file)
+            if (endframe+0 <= startframe+0)  continue;
+            printf "%-8s%-8s%-9s", startframe, endframe, endframe - startframe;
+            judge = "same"; frametype=-1;
+
+            # search for current end frame type in each mlf files, check their consistency
+            for (idx in idx2file)
             {
-                _type_new = get_frame_type(frame2type[idx_file][uttid], frame);
-                printf "%-8s", _type_new;
-                if (_type != -1 && _type != _type_new)
+                frametype_new = get_frametype(idx, uttid, endframe);
+                printf "%-8s", frametype_new;
+                if (frametype != -1 && frametype != frametype_new)
                     judge = "diff";
-                _type = _type_new;
+                frametype = frametype_new;
             }
             printf "%-8s\n", judge;
-            start=frame;
+            startframe=endframe;
         }
         printf "\n";
-    }   
+    }
 }
 ```
 

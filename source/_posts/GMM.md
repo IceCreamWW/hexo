@@ -3,7 +3,7 @@ title: "[Model] GMM"
 catalog: true
 toc_nav_num: true
 date: 2019-07-22 17:05:15
-subtitle: "GMM derivation"
+subtitle: "Guassian Mixure Model derivation"
 header-img: "Demo.png"
 top: 0
 tags:
@@ -136,7 +136,7 @@ $$
 
 #### $\Sigma$
 
-[参考矩阵求导规则:](/pdfs/matrix-cookbook.pdf)
+[参考矩阵求导规则:](./matrix-cookbook.pdf)
 $$
 \frac{\partial \log \lvert A \rvert}{\partial A} = (A^{-1})^T \\
 \frac{\partial tr(A^{-1}B)}{\partial A} = -(A^{-1})^TB(A^{-1})^T \\

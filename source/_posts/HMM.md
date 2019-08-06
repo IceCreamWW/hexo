@@ -3,7 +3,7 @@ title: "[Model] HMM"
 catalog: true
 toc_nav_num: true
 date: 2019-07-22 17:05:21
-subtitle: "HMM derivation"
+subtitle: "Hidden Markov Model derivation"
 header-img: "Demo.png"
 top: 0
 tags:
@@ -402,3 +402,10 @@ $$
 $$
 b_i(v_k) = \frac{\sum\limits_{t=1}^T \gamma_t(i) \cdot I(o_t=v_k)}{\sum\limits_{t=1}^T \gamma_t(i)}
 $$
+
+
+---
+
+## 相关链接
+
+- [HMM实际应用: 概率对数缩放](./HMM-rescale.pdf)

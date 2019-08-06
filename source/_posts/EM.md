@@ -178,4 +178,4 @@ $$
 
 - [EM算法的应用: GMM](/article/GMM)
 - [EM算法的应用: HMM](/article/HMM)
-- [Jensen 不等式的证明 - 数学归纳法](/pdfs/jensen_inequality.pdf)
+- [Jensen 不等式的证明 - 数学归纳法](./jensen_inequality.pdf)
