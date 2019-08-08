@@ -5,6 +5,7 @@ toc_nav_num: true
 date: 2019-08-05 10:36:17
 subtitle: "Connectionest Temporal Classification introduction, illustration and derivation"
 header-img: "Demo.png"
+top: 0 
 tags:
 - seq2seq
 - loss function
@@ -12,6 +13,7 @@ tags:
 mathjax: true
 categories:
 - deeplearning
+
 ---
 
 > CTC是一种用来训练seq2seq网络的损失函数，它不需要数据和标注的对齐，可用于训练语音识别端到端系统。

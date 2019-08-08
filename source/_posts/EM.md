@@ -5,7 +5,7 @@ toc_nav_num: true
 date: 2019-07-16 11:08:59
 subtitle: "EM algorithm derivation"
 header-img: "Demo.png"
-top: 1
+top: 10
 tags:
 - algorithm
 - optimization
