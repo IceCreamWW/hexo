@@ -19,6 +19,31 @@ categories:
 
 ## 训练
 
+test for inline $\theta$
+
+test for normal:
+$$
+\theta
+$$
+
+test for align:
+\begin{align}
+\theta &= \theta_1 \\
+       &= \theta_2 \\
+       &= \theta_3 \\
+       &= \theta_4
+\end{align}
+
+test for label
+$$
+\begin{align}
+\theta &= \theta_1 \label{eq:1}\tag{1} \\
+       &= \theta_2 \label{eq:2}\tag{2} \\
+       &= \theta_3 \label{eq:3}\tag{3} \\
+       &= \theta_4 \label{eq:4}\tag{4} 
+\end{align}
+$$
+
 ### 前向变量
 
 ---

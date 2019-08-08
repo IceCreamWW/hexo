@@ -17,7 +17,11 @@ catagories:
 
 ## 公式渲染
 - 行间、行内公式无法渲染的解决方案  
-参考: https://nathaniel.blog/tutorials/make-hexo-support-math-again/
+参考: https://ranmaosong.github.io/2017/11/29/hexo-support-mathjax/  
+其中，mathjax的script地址需要改为  
+```javascript
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+```
 
 
 ## github 部署
