@@ -20,19 +20,56 @@ catagories:
 
 ###  sort\_to\_field.awk
 
-- 目标
+- 目标: 将文件1按照文件2的某个键排序
+- 介绍: 排序scp文件的常用操作 
 
-#### AWK 脚本
+**AWK 脚本**
 
 ```awk
 FNR==NR{
     record[$f] = $0
 }
-FNR != NR {
+FNR!=NR {
     if ($f in record)
         print record[$f]
 }
 ```
+
+---
+
+示例输入:
+
+text.txt
+```
+440c02010 sox -r 16k -e signed -b 16 -c 1 -t raw /path-to-440c0201.wv1 -t wav - |
+440c02040 sox -r 16k -e signed -b 16 -c 1 -t raw /path-to-440c0204.wv1 -t wav - |
+440c02020 sox -r 16k -e signed -b 16 -c 1 -t raw /path-to-440c0202.wv1 -t wav - |
+440c02050 sox -r 16k -e signed -b 16 -c 1 -t raw /path-to-440c0205.wv1 -t wav - |
+440c02030 sox -r 16k -e signed -b 16 -c 1 -t raw /path-to-440c0203.wv1 -t wav - |
+```
+
+refer.txt
+```text
+440c02010 440
+440c02020 440
+440c02030 440
+440c02040 440
+440c02050 440
+```
+
+---
+
+示例输出 (sort_to_field.awk -v f=1 text.txt refer.txt):
+
+```
+440c02010 sox -r 16k -e signed -b 16 -c 1 -t raw /path-to-440c0201.wv1 -t wav - |
+440c02020 sox -r 16k -e signed -b 16 -c 1 -t raw /path-to-440c0202.wv1 -t wav - |
+440c02030 sox -r 16k -e signed -b 16 -c 1 -t raw /path-to-440c0203.wv1 -t wav - |
+440c02040 sox -r 16k -e signed -b 16 -c 1 -t raw /path-to-440c0204.wv1 -t wav - |
+440c02050 sox -r 16k -e signed -b 16 -c 1 -t raw /path-to-440c0205.wv1 -t wav - |
+```
+
+
 
 
 ---
@@ -46,7 +83,7 @@ FNR != NR {
 
 ---
 
-#### AWK 知识
+**AWK 脚本**
 
 1. PROCINFO 控制遍历列表的顺序，取值包括:
     - "@unsorted" (默认)
@@ -58,8 +95,6 @@ FNR != NR {
 3. asort(src, dest, method) 第三个参数从PROCINFO中取值
 
 ---
-
-#### AWK 脚本
 
 ```awk
 #! /bin/awk -f
