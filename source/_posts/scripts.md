@@ -23,7 +23,7 @@ catagories:
 - 目标: 将文件1按照文件2的某个键排序
 - 介绍: 排序scp文件的常用操作 
 
-**AWK 脚本**
+**AWK**
 
 ```awk
 FNR==NR{
@@ -33,6 +33,14 @@ FNR!=NR {
     if ($f in record)
         print record[$f]
 }
+```
+
+---
+
+**SHELL + AWK**
+
+```bash
+cat text.txt refer.txt | awk '{if ($1 in a) print a[$1]; a[$1]=$0}'
 ```
 
 ---
@@ -68,9 +76,6 @@ refer.txt
 440c02040 sox -r 16k -e signed -b 16 -c 1 -t raw /path-to-440c0204.wv1 -t wav - |
 440c02050 sox -r 16k -e signed -b 16 -c 1 -t raw /path-to-440c0205.wv1 -t wav - |
 ```
-
-
-
 
 ---
 
