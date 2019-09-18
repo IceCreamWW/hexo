@@ -1,5 +1,5 @@
 ---
-title: "[Model] HMM"
+title: "[Book] HTK"
 catalog: true
 toc_nav_num: true
 date: 2019-07-22 17:05:21
@@ -59,13 +59,13 @@ $$
 
 对于HMM $\lambda = (A, B, \pi)$ 和观测序列 $O$, 求观测序列的似然 $P(O \mathrel | \lambda)$。  ( 以下省略 $\lambda$ ) 
 
-### 前向算法 (Forward Algoithm)
+### 前向算法 (Forward Algorithm)
 
 令 $ \alpha_t(i) = P(o_1^t, q_t=S_i)$ , 则似然观测概率的似然可以表示为: 
 
 
 \begin{align}
-P(O)    &= \sum_{i=1}^N P(o_i^T, q_T=S_i) \\
+P(O)    &= \sum_{i=1}^N P(o_1^T, q_T=S_i) \\
         &= \sum_{i=1}^N \alpha_T(i)
 \end{align}
 
