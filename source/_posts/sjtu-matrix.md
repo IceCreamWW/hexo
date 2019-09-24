@@ -1,5 +1,5 @@
 ---
-title: "[Lecture] matrix"
+title: "[Lecture] Matrix"
 catalog: true
 toc_nav_num: true
 date: 2019-09-19 11:07:56
@@ -13,4 +13,5 @@ catagories:
 - sjtu
 ---
 
-# Lecture 1
+#### Lecture List
+- [Lecture 1](./sjtu-matrix-1)

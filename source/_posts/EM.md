@@ -13,6 +13,7 @@ tags:
 mathjax: true
 catagories:
 - algorithm
+
 ---
 
 > 本文记录了EM算法的思想及其推导过程, 仍然感觉自己对EM算法的本质理解有所欠缺，以后补充

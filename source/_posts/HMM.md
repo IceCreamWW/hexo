@@ -1,5 +1,5 @@
 ---
-title: "[Book] HTK"
+title: "[Model] HMM"
 catalog: true
 toc_nav_num: true
 date: 2019-07-22 17:05:21

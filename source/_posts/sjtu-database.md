@@ -128,6 +128,9 @@ catagories:
 - 未提交的事务可能回滚，进而导致级联回滚
 - 每个无级联回滚调度也是可恢复的调度
 
+
+![cascading rollback](https://www.gatevidyalay.com/wp-content/uploads/2018/06/Cascading-Schedule-Cascading-Rollback-Cascading-Abort-1.png)
+
 ---
 
 ## 弱一致性级别

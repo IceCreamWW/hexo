@@ -4,6 +4,11 @@ layout: page
 <!-- Main Content -->
 
 <% page.posts.each(function(post){ %>
+
+    <% if (post.hide){ %>
+    <% return %>
+    <% } %>
+
 <div class="post-preview">
 
     <a href="<%- config.root %><%- post.path %>">
