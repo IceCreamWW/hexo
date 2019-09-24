@@ -106,6 +106,28 @@
             </div>
         </div>
     </div>
+
+<!-- Modal -->
+<div class="modal fade" id="search-modal" tabindex="-1" role="dialog" aria-labelledby="modalLabelLarge" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            <h4 class="modal-title" id="modalLabelLarge">Search Zone</h4>
+            </div>
+
+            <div class="modal-body">
+                <div id="search-zone"><div/>
+                    <input type="text" id="cb-search-content" id="cb-search-content" placeholder="文章标题 日期 标签" />
+                </div>
+
+        </div>
+    </div>
+</div>
+
 </footer>
 
 <!-- jQuery -->
@@ -117,6 +139,9 @@
 <!-- Custom Theme JavaScript -->
 <%- js('js/hux-blog.min.js') %>
 
+<!-- hexo search -->
+<%- js('js/bootstrap3-typeahead.min.js') %>
+<%- js('/search/js/cb-search.js') %>
 
 <!-- async load function -->
 <script>

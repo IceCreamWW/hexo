@@ -14,4 +14,4 @@ catagories:
 ---
 
 #### Lecture List
-- [Lecture 1](./sjtu-matrix-1)
+- [Lecture 1](./lectures/sjtu-matrix-1)
